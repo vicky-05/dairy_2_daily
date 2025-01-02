@@ -1,0 +1,177 @@
+/* Feature box styling */
+.feature-box {
+    min-height: 250px; /* Optional: Set a minimum height */
+    text-align: center;
+    background-color: #fff; /* Light background for each feature box */
+    border: 1px solid #ddd;    /* Light border around the box */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);  /* Lift the box on hover */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+}
+
+.icon-feature {
+    color: black; /* Color for the icons */
+}
+
+.feature-box h4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.feature-box p {
+    color: #555;
+}
+
+/* Responsive margin adjustments */
+@media (max-width: 768px) {
+    .feature-box {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Product Section */
+
+.product-image {
+    width: 100%; /* Maintain responsiveness */
+    max-width: 300px; /* Fixed maximum width */
+    height: 300px; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensures proper cropping if needed */
+    margin: 0 auto; /* Center the image */
+}
+
+.product-box {
+    border: 2px solid black; /* Blue border */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #fff; /* Light gray background */
+    transition: transform 0.3s ease-in-out; /* Smooth hover effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.product-box h4 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: black;
+}
+
+/* Hover Effect */
+.product-box:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
+    box-shadow: 5px 10px 12px rgba(44, 43, 43, 0.2); /* Enhanced shadow on hover */
+}
+
+
+/* Testimonials Section */
+/* General Styling */
+.testimonials {
+    padding: 50px 0;
+    overflow: hidden; /* Hide overflowing content */
+}
+
+/* Testimonial Container */
+.testimonial-container {
+    display: flex;
+    gap: 30px; /* Spacing between items */
+    animation: scroll-left 30s linear infinite; /* Animation to scroll */
+    will-change: transform; /* Optimize for animation */
+}
+
+/* Individual Testimonial Item */
+.testimonial-item {
+    flex: 0 0 33%; /* Default: Each testimonial takes up one-third of the width */
+    max-width: 300px;
+    background-color: #fff;
+    border: 2px solid black;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-container:hover {
+    animation-play-state: paused; /* Stops scrolling when hovered */
+}
+
+/* Quote Text */
+.testimonial-item p {
+    font-style: italic;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Footer Styling */
+.testimonial-item .blockquote-footer {
+    font-size: 1rem;
+    color: #555;
+    font-weight: bold;
+    text-align: right;
+}
+
+
+.testimonial-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.testimonial-item p {
+    font-size: 1.2rem; /* Larger font for quotes */
+    line-height: 1.6;
+    position: relative;
+    padding-left: 20px; /* Indent for icon */
+}
+
+.testimonial-item p::before {
+    content: "“"; /* Left quote icon */
+    font-size: 2rem;
+    color: var(--primary-color);
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.testimonial-item p {
+    font-size: clamp(1rem, 2.5vw, 1.2rem); /* Responsive font size */
+}
+
+/* Keyframes for scrolling left */
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Keyframes for smoother mobile scrolling */
+@keyframes scroll-left-mobile {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-120%);
+    }
+}
+
+
+/* Responsive Adjustments for Mobile */
+@media (max-width: 768px) {
+    .testimonial-container {
+        gap: 15px; /* Reduce space between items */
+        animation: scroll-left-mobile 20s linear infinite; /* Slower scroll for smaller screens */
+    }
+
+    .testimonial-item {
+        flex: 0 0 80%; /* Make testimonials take up more width on mobile */
+        max-width: 90%; /* Allow them to be larger than 300px */
+        margin: 0 auto; /* Center the testimonial items */
+    }
+}
+

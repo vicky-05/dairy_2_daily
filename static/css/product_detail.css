@@ -1,0 +1,125 @@
+    .benefits-section {
+        padding: 40px 20px;
+        background-color: #eeeeee; /* Light background for the section */
+    }
+
+    .benefits-section h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #000;
+    }
+
+    .benefit-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+        filter: brightness(29%) saturate(190%);
+    }
+
+    .benefit-icon:hover {
+        transform: scale(1.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+    .benefits-section p {
+        font-size: 1rem;
+        color: #333;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+        }
+
+        .benefits-section p {
+            font-size: 0.9rem;
+        }
+    }
+    /* Equal distribution for image and video */
+    .carousel-inner {
+        display: flex;
+        align-items: center;
+        height: 60vh; /* Set a consistent height for slides */
+    }
+
+    .carousel-item img, .carousel-item video {
+        height: 100%;
+        object-fit: contain;
+    }
+
+    /* Optional: Add some spacing */
+    .carousel-item {
+        padding: 5px;
+    }
+
+    /* Buttons */
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .review-card {
+            width: 100%; /* Full width for small screens */
+        }
+    }
+
+    .review-card-section h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #000;
+    }
+
+
+    .card {
+        width: 100%;
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        background-color: #fff;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .review-header {
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+    }
+
+    .review-rating {
+        font-size: 14px;
+        color: #ff9800; /* Gold color for ratings */
+    }
+
+    .review-text {
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+
+    .nutrition-section {
+        background-color: #f9f9f9; /* Light gray background */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .table-bordered th, .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+

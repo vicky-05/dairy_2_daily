@@ -1,0 +1,106 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Blog | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/blog_content.css' %}">
+{% endblock styles %}
+
+{% block content %}
+    <!-- Blog Header -->
+    <section class="newspaper-layout mt-3" >
+        <div class="container">
+            <header class="news-header" data-aos="fade-down">
+                <h1>The Dairy Daily Times</h1>
+                <p>Fresh Stories of Milk and Farming</p>
+            </header>
+    
+            <div class="news-content">
+                <div class="main-image">
+                    <img src="/static/images/dairy-cows.jpg" alt="Dairy Farm" data-aos="zoom-in">
+                    <p class="caption">A glimpse into our dairy farm practices</p>
+                </div>
+                <div class="article" data-aos="fade-left">
+                    <h2 >The Story Headline and Picture</h2>
+                    <p>
+                        Milk is more than just a nutritious beverage; it's a symbol of care, dedication, and tradition. Have you ever wondered 
+                        about the story behind the milk you pour into your glass each morning? The journey of milk from farm to table is a fascinating 
+                        process that involves precision, technology, and a commitment to quality. Let’s take a closer look at each step of this 
+                        incredible journey.
+                    </p>
+                    <h2>Step 1: Where It All Begins – The Farm</h2>
+                    <p>
+                        The journey starts at the farm, where cows are raised with the utmost care. Farmers ensure their cows are healthy, well-fed, 
+                        and live in a stress-free environment. On organic farms, cows graze on natural pastures free from synthetic chemicals, 
+                        enhancing the milk's purity and flavor. Farmers work tirelessly to maintain the highest standards of animal welfare because 
+                        happy cows produce better milk.
+                    </p>
+                    <h2>Step 2: Milking the Cows</h2>
+                    <p>
+                        The milking process today is a blend of tradition and technology. Farmers use advanced, hygienic milking systems that ensure 
+                        both efficiency and comfort for the cows. The milk is collected in sterilized containers, minimizing the risk of contamination 
+                        while retaining its natural goodness.
+                    </p>
+
+                    <h2>Step 3: Rapid Cooling</h2>
+                    <p>
+                        Fresh milk is quickly cooled to a safe temperature to maintain its freshness and nutritional quality. This step is crucial to 
+                        prevent bacterial growth and ensure the milk is ready for transportation without compromising its purity.
+                    </p>
+
+                    <h2>Step 4: Transportation to Processing Facilities</h2>
+                    <p>
+                        The cooled milk is transported in insulated tankers to processing facilities. These tankers are specially designed to maintain 
+                        the milk’s temperature during transit, preserving its quality until it reaches the next stage.
+                    </p>
+
+                    <h2>Step 5: Processing for Quality Assurance</h2>
+                    <p>
+                        At the processing plant, milk undergoes a series of steps to ensure it’s safe and ready for consumption:
+                        <ul>
+                            <li><strong>Pasteurization:</strong> Milk is heated to eliminate harmful bacteria without affecting its nutritional value.</li>
+                            <li><strong>Homogenization:</strong> This process ensures the cream is evenly distributed throughout the milk for a smooth and consistent texture.</li>
+                            <li><strong>Quality Checks:</strong> Samples are tested rigorously for purity, freshness, and nutritional content before proceeding to packaging.</li>
+                        </ul>
+                    </p>
+
+                    <h2>Step 6: Packaging</h2>
+                    <p>
+                        Processed milk is then packaged in eco-friendly bottles, cartons, or pouches to retain its freshness. The packaging is designed 
+                        to protect the milk from light and air, ensuring it stays nutritious and delicious when it reaches your home.
+                    </p>
+
+                    <h2 >Step 7: Distribution</h2>
+                    <p>
+                        After packaging, milk is distributed to retailers and delivery hubs through a well-coordinated network. Many farms now offer 
+                        direct-to-home delivery services, ensuring milk reaches consumers as fresh as possible.
+                    </p>
+
+                    <h2>Step 8: On Your Table</h2>
+                    <p>
+                        Finally, the milk arrives in your kitchen, ready to enrich your meals. Whether it’s enjoyed as a refreshing drink, poured over 
+                        cereal, or used in cooking, milk plays a vital role in our daily lives.
+                    </p>
+                    
+                    <h2 >The Story Behind Every Glass</h2>
+                    <p>
+                        Every drop of milk tells a story of dedication—from the farmers who care for the cows to the logistics teams that ensure it 
+                        reaches you fresh. Understanding this journey not only helps us appreciate milk but also emphasizes the importance of 
+                        supporting local dairy farmers. By choosing fresh, locally sourced milk, you’re contributing to sustainable practices and 
+                        enjoying a product that’s wholesome and full of goodness.
+                    </p>
+                </div>
+                
+            </div>
+    
+            
+        </div>
+    </section>
+    
+
+    <!-- Footer -->
+    <footer class="blog-footer">
+        <div class="container">
+            <p>&copy; 2024 Dairy to Daily. All rights reserved.</p>
+        </div>
+    </footer>
+{% endblock content %}

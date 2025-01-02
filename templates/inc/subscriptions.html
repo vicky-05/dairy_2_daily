@@ -1,0 +1,189 @@
+{% load static %}
+<style>
+    /* Header background styles */
+
+#carding .card-header {
+    background: var(--dark-color);
+    
+}
+
+#carding .card-body{
+    background:var(--primary-color);
+}
+#carding .card-body p,
+#carding .card-body h5{
+    color: var(--light-color);
+}
+
+
+ 
+.basic-bg h4 {
+    color: #C0C0C0;
+}
+
+.basic-btn{
+    border:1px solid #C0C0C0;
+    color: #C0C0C0;
+}
+
+.basic-btn:hover{
+    background-color: #C0C0C0;
+    color: black;
+}
+
+.standard-bg h4 {
+    color: #FFD700;
+}
+
+.standard-btn{
+    border:1px solid #FFD700;
+    color: #FFD700;
+}
+
+.standard-btn:hover{
+    background-color: #FFD700;
+    color: black;
+}
+.premium-bg h4 {
+    color: #F0F8FF;
+}
+
+.premium-btn{
+    border:1px solid #F0F8FF;
+    color: #F0F8FF;
+}
+
+.premium-btn:hover{
+    background-color: #F0F8FF;
+    color: black;
+}
+
+
+/* Price styling */
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin: 15px 0;
+}
+
+/* Icons */
+.card-body i {
+    font-size: 1.2rem;
+    margin-right: 8px;
+    color: #6c757d;
+}
+
+/* Buttons */
+.card-body .btn {
+    border-radius: 50px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .premium-card {
+        margin-bottom: 20px;
+    }
+
+    .card-body p {
+        font-size: 0.9rem;
+    }
+
+    .price {
+        font-size: 1.2rem;
+    }
+}
+
+
+.card {
+    border-radius: 15px;
+}
+#card-footer,
+#card-footer .blockquote-footer{
+    background-color: var(--primary-color);
+    color:#fff;
+}
+.card-footer blockquote {
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+#carding {
+    background-color: #f8f9fa;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#carding:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#carding .card-header {
+    transition: background-color 0.3s ease;
+}
+
+.detailSection li{
+    color: white;
+}
+
+</style>
+<!-- Subscription Plans Section -->
+<section class="subscription-plans py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Our Subscription Plans</h2>
+        <div class="row">
+            <!-- Basic Plan -->
+        {% for plan in subscription_plans %}
+
+            <div class="col-md-4 mb-4 ">
+                <div class="card shadow " data-aos="fade-up" data-aos-delay="200" id="carding">
+                    <div class="card-header text-white  {% if plan.name == 'Basic' %}basic-bg{% elif plan.name == 'Standard' %}standard-bg{% else %}premium-bg{% endif %}">
+                        <h4 class="card-title">{{ plan.name }}</h4>
+                    </div>
+                    <div class="card-body basic-body">
+                        <h5 class="card-title fw-bold">₹{{ plan.price_per_month }} per Month</h5>
+                        <p><i class="fa-solid fa-bottle-water"></i> {{ plan.milk_quantity_per_day }} liter of fresh milk</p>
+                        <p><i class="fas fa-sun text-secondary"></i>Morning: 500ml</p><p><i class="fas fa-moon text-secondary"></i>Evening: 500ml</p>
+                        <p><i class="fas fa-percentage text-secondary"></i> {{ plan.discount_on_byproducts }} off on Ghee and Palkova</p>
+                        <button class="btn {% if plan.name == 'Basic' %}basic-btn{% elif plan.name == 'Standard' %}standard-btn{% else %}premium-btn{% endif %} mt-3 see-option" data-bs-toggle="collapse" {% if plan.name == 'Basic' %}data-bs-target="#detailsBasic"{% elif plan.name == 'Standard' %}data-bs-target="#detailsStandard"{% else %}data-bs-target="#detailsPremium"{% endif %} role="button" aria-expanded="false" aria-controls="detailsBasic">See Details</button>
+                        <div class="collapse detailSection" {% if plan.name == 'Basic' %}id="detailsBasic"{% elif plan.name == 'Standard' %}id="detailsStandard"{% else %}id="detailsPremium"{% endif %} >
+                            <ul class="list-unstyled mt-3">
+                                <li><i class="fas fa-pause-circle text-secondary"></i> Pause delivery for up to {{ plan.delivery_pause_limit }} days per month</li>
+                                <li><i class="fas fa-sync-alt text-secondary"></i> Any issue with milk or by-products will be replaced without delay</li>
+                            </ul>
+                        </div>
+                        <a href="{% url 'subscribe' plan.id %}" class="btn {% if plan.name == 'Basic' %}basic-btn{% elif plan.name == 'Standard' %}standard-btn{% else %}premium-btn{% endif %} mt-3">Subscribe Now</a>
+                    </div>
+                    {% for feedback in plan.feedbacks.all %}
+                    <div class="card-footer" id="card-footer">
+                        <blockquote class="blockquote mb-0">
+                            <p class="mb-2">{{ feedback.feedback }}</p>
+                            <footer class="blockquote-footer mt-1"> {{ feedback.user_name }}</footer>
+                        </blockquote>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% endfor %}
+
+            
+
+            
+        </div>
+    </div>
+</section>
+<script>
+    document.querySelectorAll('.see-option').forEach(button => {
+        button.addEventListener('click', function () {
+            const isExpanded = this.getAttribute('aria-expanded') === 'false';
+            this.textContent = isExpanded ? 'See Details' : 'See Less';
+        });
+    });
+</script>

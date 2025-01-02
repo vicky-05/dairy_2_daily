@@ -1,0 +1,92 @@
+{% load static %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg  shadow-sm " >
+    <div class="container">
+        <!-- Logo -->
+         <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'images/Dairy_To_Daily_logo.png' %}" alt="Dairy to Daily Logo" class="logo" >
+        </a>
+        
+        <!-- Toggler for Mobile View -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navbar Links and Buttons -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Centered Links -->
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'home' %}" style="animation: fadeInSlide 1s;">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}" style="animation: fadeInSlide 1.2s;">About</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="byProductDropdown" role="button" aria-expanded="false">Product</a>
+                    <ul class="dropdown-menu border-0 shadow">
+                        {% for product in products %}
+                        <li class="dropdown-item d-flex align-items-center">
+                            <a href="#" class=" nav-link me-2">{{ product.name }}</a>
+                            <img src="{{ product.image.url }}" alt="Curd" class="preview-img">
+                        </li>
+                        {% endfor %}
+                        
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="{% url 'blog' %}" id="byBlogDropdown" role="button" aria-expanded="false">Blog</a>
+                    <ul class="dropdown-menu border-0 shadow">
+                        <li class="dropdown-item d-flex align-items-center">
+                            <a href="{% url 'organic_milk' %}" class=" nav-link me-2">Benefits of Organic Milk</a>
+                            <img src="/static/images/benefits-of-milk.jpg" alt="Curd" class="preview-img">
+                        </li>
+                        <li class="dropdown-item d-flex align-items-center">
+                            <a href="{% url 'journey_milk' %}" class=" nav-link me-2">The Journey of Milk</a>
+                            <img src="/static/images/dairy-cows.jpg" alt="Cheese" class="preview-img">
+                        </li>
+                        <li class="dropdown-item d-flex align-items-center">
+                            <a href="{% url 'fresh_milk' %}" class=" nav-link me-2">Why Fresh Milk is Best</a>
+                            <img src="/static/images/organic-milk-Organic-Boosting1.jpg" alt="Butter" class="preview-img">
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        
+            <!-- Sign Up and Login Buttons -->
+            <div class="d-flex flex-column flex-lg-row">
+                <form class="d-flex d-none d-lg-flex me-lg-2" style="animation: dropIn 1.2s;">
+                    <input class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-dark ms-2" type="submit" style="animation: pulse 2s infinite;">Search</button>
+                </form>
+                {% if user.is_authenticated %}
+                    <!-- Authenticated User Section -->
+                    <div class="d-flex align-items-center">
+                        <!-- User Profile Button -->
+                        <a href="#" class="btn btn-dark d-flex align-items-center me-2" style="animation: fadeIn 1s;">
+                            <i class="bi bi-person-circle fs-4 me-2"></i> {{ user.username }}
+                        </a>
+                        <!-- Logout Button -->
+                        <a href="{% url 'logout' %}" class="btn btn-outline-dark d-flex align-items-center" style="animation: fadeIn 1s;">
+                            <i class="bi bi-box-arrow-right fs-4 me-2"></i> Logout
+                        </a>
+                    </div>
+                {% else %}
+                <a href="{% url 'register' %}" class="btn btn-dark me-lg-2 mx-lg-2" style="animation: growIn 1s;">Sign Up</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-dark" style="animation: growIn 1.3s;">Login</a>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+</nav>
+
+<!-- Search Bar for Mobile View -->
+<div class="search-container-mb d-lg-none ">
+    <div class="container">
+        <form class="d-flex">
+            <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
+            <button class="btn search-button" type="submit">Go</button>
+        </form>
+    </div>
+</div>

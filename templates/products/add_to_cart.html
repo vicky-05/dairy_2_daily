@@ -1,0 +1,138 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %} Add to Cart | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/add_to_cart.css' %}">
+
+
+{% endblock styles %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="text-center mb-4 section-header text-uppercase">Your Cart</h2>
+
+    <!-- Cart Layout with Divider -->
+    <div class="cart-layout">
+        <!-- Product Details Section -->
+        <div class="cart-section" data-aos="fade-right">
+            <div class="card mb-4">
+                <div class="card-header text-center bg-dark text-white" data-aos="fade-down">Cart Items</div>
+                <div class="card-body" data-aos="zoom-in">
+                    {% if cart %}
+                        {% for slug, item in cart.items %}
+                        <div class="cart-item" data-aos="fade-up">
+                            <img src="{{ item.image }}" alt="{{ item.name }}">
+                            <div class="cart-item-details">
+                                <div class="cart-item-name">{{ item.name }}</div>
+                                <td> ₹{{ item.discounted_price|multiply:item.quantity|floatformat:2 }}</td>
+                                <div class="cart-item-quantity">Quantity: {{ item.quantity }}</div>
+                            </div>
+                            <a href="{% url 'remove_from_cart' slug %}" class="remove-btn text-danger text-decoration-none">
+                                <i class="fa-solid fa-trash me-2"></i>Remove
+                            </a>
+                        </div>
+                        {% endfor %}
+
+
+                        <!-- Cart Total Section -->
+                        <div class="cart-total mt-3">
+                            <div class="text-muted">Total</div>
+                            <div class="cart-item-price" id="total-price">₹{{ total_price|floatformat:2 }}</div>
+                        </div>
+                    {% else %}
+                    <div class="text-center">
+                        <img src="{% static 'images/empty_cart_cow.png' %}" alt="Empty Cart" class="img-fluid" style="max-width: 300px;">
+                        <div class="text-center mt-4">
+                            <p class="text-muted" style="font-size: 1.25rem; font-weight: 500; letter-spacing: 0.5px;">
+                                <i class="fa-solid fa-cart-arrow-down" style="font-size: 2rem; color: #6c757d;"></i>
+                                <br>
+                                Your cart is empty.
+                            </p>
+                            
+                        </div>
+                        
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider between sections -->
+        <div class="section-divider"></div>
+
+        <!-- Checkout Section -->
+        <div class="cart-section" data-aos="fade-left">
+            <div class="card mb-4">
+                <div class="card-header text-center bg-dark text-white" data-aos="fade-down">Checkout</div>
+                <div class="card-body" data-aos="zoom-in">
+                    <!-- Item Count Section -->
+                    <div class="cart-total">
+                        <div class="text-muted">Items in Cart</div>
+                        <div class="cart-item-price" id="item-count">{{ total_quantity }}</div>
+                    </div>
+
+                    
+                    <!-- Delivery Fee Section -->
+                    <div class="cart-delivery">
+                        <div class="text-muted">Delivery Fee</div>
+                        <div class="cart-item-price" id="delivery-fee">
+                            ₹{{ delivery_fee }}
+                        </div>
+                    </div>
+
+                    <!-- Final Total after discount and delivery fee -->
+                    <div class="cart-total">
+                        <div class="text-muted">Final Total</div>
+                        <div class="cart-item-price" id="final-total">₹{{ final_total }}</div>
+                    </div>
+
+                    <button class="checkout-btn" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-aos="fade-up">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+
+            <div class="cart-footer">
+                <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    // Example: Assuming the cart is dynamically updated via JavaScript
+    // Parse the serialized cart JSON
+    const cartItems = JSON.parse('{{ cart_json |safe }}');
+    const deliveryFeeThreshold = 500;
+    const deliveryFeeValue = 20;
+
+    function updateCartSummary() {
+        let totalQuantity = 0;
+        let totalPrice = 0;
+
+        // Calculate totals
+        for (const slug in cartItems) {
+            const item = cartItems[slug];
+            totalQuantity += item.quantity;
+            totalPrice += item.quantity * item.price;
+        }
+
+        // Calculate delivery fee and final total
+        const deliveryFee = totalPrice < deliveryFeeThreshold ? deliveryFeeValue : 0;
+        const finalTotal = totalPrice + deliveryFee;
+
+        // Update the DOM
+        document.getElementById('item-count').textContent = totalQuantity;
+        document.getElementById('delivery-fee').textContent = `₹${deliveryFee}`;
+        document.getElementById('final-total').textContent = `₹${finalTotal}`;
+    }
+
+    // Call the function to initialize
+    updateCartSummary();
+</script>
+
+{% endblock scripts %}

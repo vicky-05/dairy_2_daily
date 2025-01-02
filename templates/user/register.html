@@ -1,0 +1,41 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Register | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+{% endblock styles %}
+{% block content %}
+
+<div class="register-container">
+    <div class="register-box">
+        {% include 'inc/message.html' %}
+        <h2>Create an Account</h2>
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm-password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password" required>
+            </div>
+            <button type="submit" class="btn btn-register">Register</button>
+            <span class="login-link">Already have an account? <a href="{% url 'home' %}">Login</a></span>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+
+{% endblock scripts %}

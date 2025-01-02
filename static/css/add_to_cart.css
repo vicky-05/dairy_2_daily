@@ -1,0 +1,289 @@
+
+
+        .card {
+            background-color: #fff;  /* White background for cards */
+            color: #333;  /* Dark text on cards */
+            border: 1px solid #ccc;  /* Light border for cards */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #f7f7f7;  /* Light gray background for card header */
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #f1f1f1;
+            padding-bottom: 1rem;
+        }
+
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .cart-item-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .cart-item-price {
+            color: #333;  /* Dark text color for price */
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .remove-btn {
+            color: #000;  /* Black color for remove button */
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .remove-btn:hover {
+            color: #555;  /* Dark gray on hover */
+        }
+
+        .cart-total,
+        .cart-discount,
+        .cart-delivery {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .checkout-btn {
+            background-color: #000;  /* Black background */
+            color: #fff;  /* White text on buttons */
+            border: none;
+            border-radius: 5px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            width: 100%;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .checkout-btn:hover {
+            background-color: #333;  /* Darker gray on hover */
+        }
+
+        .text-muted {
+            color: #777;
+        }
+
+     
+
+        /* Section Divider */
+        .section-divider {
+            border-left: 2px solid #ddd;
+            height: 100%;
+        }
+
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .section-header::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: #000;
+        }
+
+        /* Cart section layout */
+        .cart-layout {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cart-section {
+            width: 48%;
+        }
+
+        /* Modal Styling */
+        .modal-header {
+            background-color: #f7f7f7;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .remove-btn {
+            color: black; /* Bootstrap's red color */
+            background-color: transparent; /* No background */
+            border: 1px solid black; /* Red border */
+            padding: 5px 10px; /* Adjust padding for better clickability */
+            font-size: 0.9rem; /* Smaller text */
+            font-weight: bold; /* Bold text */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor for hover */
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
+        }
+
+        .remove-btn:hover {
+            background-color: black; /* Red background on hover */
+            color: #fff; /* White text on hover */
+            transform: scale(1.05); /* Slight scaling effect on hover */
+        }
+
+        
+        .remove-btn:active {
+            transform: scale(0.95); /* Slight shrink effect on click */
+        }
+
+        .checkout-btn {
+            color: #fff; /* White text */
+            background-color: #000; /* Black background */
+            border: 2px solid #000; /* Black border for a bold look */
+            padding: 12px 24px; /* Ample padding for larger click area */
+            font-size: 1.2rem; /* Slightly larger font size */
+            font-weight: bold; /* Bold text for emphasis */
+            text-transform: uppercase; /* Uppercase for importance */
+            border-radius: 8px; /* Smooth rounded edges */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: all 0.3s ease-in-out; /* Smooth animation */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+
+        .checkout-btn:hover {
+            color: #000; /* Black text */
+            background-color: #fff; /* White background on hover */
+            border-color: #000; /* Maintain black border */
+            transform: scale(1); /* Slightly larger on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow */
+        }
+
+        .checkout-btn:focus {
+            outline: none; /* Remove default focus outline */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.8); /* Dark glow for focus */
+        }
+
+        .checkout-btn:active {
+            transform: scale(0.98); /* Pressed effect */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow reduction */
+        }
+
+        .cart-footer {
+            text-align: center; /* Center the button in the container */
+            margin-top: 20px; /* Add space above the button */
+        }
+
+        .btn-continue {
+            display: inline-block; /* Makes it behave like a button */
+            padding: 12px 24px; /* Button padding */
+            font-size: 1.1rem; /* Text size */
+            font-weight: bold; /* Bold text */
+            color: #fff; /* White text */
+            background-color: #000; /* Black background */
+            text-decoration: none; /* Remove underline from the link */
+            border: 2px solid #000; /* Border matching background */
+            border-radius: 8px; /* Rounded corners */
+            text-transform: uppercase; /* Uppercase text */
+            transition: all 0.3s ease-in-out; /* Smooth animations */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add depth with shadow */
+            cursor: pointer; /* Pointer cursor for clickability */
+        }
+
+        .btn-continue:hover {
+            background-color: #fff; /* White background on hover */
+            color: #000; /* Black text on hover */
+            border-color: #000; /* Keep black border */
+            transform: scale(1.05); /* Slightly increase size on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhance shadow */
+        }
+
+        .btn-continue:focus {
+            outline: none; /* Remove default outline */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.8); /* Add focus glow */
+        }
+
+        .btn-continue:active {
+            transform: scale(0.98); /* Slightly shrink on click */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow reduction */
+        }
+
+
+
+         /* Responsive styles for mobile */
+    @media (max-width: 768px) {
+        .cart-layout {
+            flex-direction: column; /* Stack sections vertically */
+        }
+
+        .cart-section {
+            width: 100%; /* Full width for sections */
+        }
+
+        .cart-item {
+            flex-direction: column; /* Stack item details vertically */
+            text-align: center;
+        }
+
+        .cart-item img {
+            width: 100%; /* Full width images for mobile */
+            max-width: 120px; /* Limit maximum size */
+            margin-bottom: 1rem;
+        }
+
+        .cart-item-details {
+            margin-left: 0;
+        }
+
+        .cart-item-name,
+        .cart-item-price {
+            font-size: 1rem; /* Adjust font size for mobile */
+        }
+
+        .checkout-btn {
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+
+        .section-header {
+            font-size: 1.2rem; /* Adjust section header font size */
+        }
+
+        .modal-body input,
+        .modal-body button {
+            font-size: 0.9rem; /* Adjust modal form font size */
+        }
+
+        .remove-btn {
+        padding: 8px 12px; /* Increase padding for easier tapping */
+        font-size: 1rem; /* Slightly larger font size for better readability */
+    }
+    .checkout-btn {
+        padding: 10px 16px; /* Adjust padding for smaller devices */
+        font-size: 1rem; /* Slightly smaller font size */
+        border-radius: 6px; /* More compact edges */
+    }
+    }

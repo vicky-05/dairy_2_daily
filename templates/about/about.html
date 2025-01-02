@@ -1,0 +1,246 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} About | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+    .about{
+        background-color: #000;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+    }
+    .facility img {
+        border-radius: 8px;
+    }
+    .person img {
+        border-radius: 50%;
+        width: 150px;
+    }
+    .icon {
+        font-size: 50px;
+        color: #000;
+    }
+    .card {
+        background-color: #f8f9fa;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-title, .card-text, h2, h3 {
+        color: #000;
+    }
+    /* Hover effect for cards */
+    .card:hover {
+        transform: translateY(-10px); /* Slightly lift the card */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Add a shadow on hover */
+    }
+    #facility img {
+        width: 100%;  /* Ensures responsiveness */
+        height: 250px;  /* Fixed height */
+        object-fit: cover;  /* Ensures images cover the area without distortion */
+        border-radius: 8px;  /* Rounded corners */
+    }
+
+    #facility img:hover {
+        transform: scale(1.05);  /* Slight zoom on hover */
+    }
+
+    #dairy-to-daily .card {
+        border-radius: 12px;  /* Rounded corners for the card */
+        border: 1px solid #ddd;  /* Light border around the card */
+    }
+
+    #dairy-to-daily .card-body {
+        padding: 30px;  /* Padding for the content inside the card */
+    }
+
+    #dairy-to-daily h2 {
+        font-weight: bold;
+    }
+
+    #dairy-to-daily p {
+        color: #555;  /* Slightly darker text for better readability */
+    }
+
+    #dairy-to-daily img {
+        border-radius: 8px;  /* Rounded corners for the image */
+    }
+    #founders h2 {
+        font-weight: bold;
+    }
+
+    #founders h3 {
+        color: #333;  /* Dark text for the name */
+        font-weight: bold;
+    }
+
+    #founders p {
+        color: #777;  /* Lighter text for the role */
+    }
+
+    /* Add hover effect for the cards */
+    #founders .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<header class="about mt-1" >
+    <h1>About Us</h1>
+</header>
+
+<div class="container mt-4">
+    <!-- About Section -->
+    <section id="about" class="mb-5" data-aos="fade-up">
+        <div class="container">
+            <h2 class="text-center mb-4" style="font-family: 'Arial', sans-serif; font-size: 2rem; font-weight: bold;">About Dairy to Daily</h2>
+            <div class="card shadow-lg mb-4">
+                <div class="row g-0">
+                    <!-- Image Section -->
+                    <div class="col-md-6">
+                        <img src="{% static 'images/variety-cheeses-milk.avif' %}" alt="Dairy to Daily Farm" class="img-fluid rounded-start" style="max-height: 300px; object-fit: cover;">
+                    </div>
+                    
+                    <!-- Text Section -->
+                    <div class="col-md-6">
+                        <div class="card-body p-4">
+                            <p class="card-text" style="font-size: 1.1rem; color: #555; line-height: 1.8;">
+                                Dairy to Daily (DToD) is a dedicated initiative to bring fresh, organic milk and its by-products straight from our farm to your home. With our city-based farm, we aim to connect urban families with natural, high-quality dairy products.
+                            </p>
+                            <p class="card-text" style="font-size: 1rem; color: #555; line-height: 1.8;">
+                                Our mission is to ensure that every household in the city gets fresh, nutritious milk and other dairy products every day. We believe in sustainability, quality, and customer satisfaction.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision and Mission Section -->
+    <section id="vision-mission" class="mb-5" data-aos="fade-up">
+        <div class="row">
+            <!-- Vision Section -->
+            <div class="col-md-6 mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-lightbulb fa-3x mb-3" ></i> <!-- Vision Icon -->
+                        <h3 class="card-title">Vision</h3>
+                        <p class="card-text">To ensure every household in our city has access to 100% natural and fresh dairy products daily.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Section -->
+            <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bullseye fa-3x mb-3" ></i> <!-- Mission Icon -->
+                        <h3 class="card-title">Mission</h3>
+                        <p class="card-text">To maintain the highest standards in dairy farming and distribution while fostering a sustainable and healthy environment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section id="statistics" class="mb-5 text-center" data-aos="fade-up">
+        <h2 class="mb-4">Our Impact</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm py-4">
+                    <div class="card-body">
+                        <i class="fas fa-cow fa-3x mb-3"></i>
+                        <h3 class="card-title">150+ Cows</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm py-4">
+                    <div class="card-body">
+                        <i class="fas fa-truck fa-3x mb-3"></i>
+                        <h3 class="card-title">1000+ Deliveries</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm py-4">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h3 class="card-title">500+ Happy Customers</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+    <!-- DToD Explanation Section -->
+<section id="dairy-to-daily" class="mb-5 container" data-aos="fade-up">
+    <div class="card shadow-sm" data-aos="fade-up" data-aos-delay="200">
+        <div class="card-body">
+            <h2 class="text-center mb-3" data-aos="fade-down" data-aos-delay="100">What is DToD?</h2>
+            
+            <!-- Image inside the card -->
+            <div class="text-center mb-3" data-aos="zoom-in" data-aos-delay="300">
+                <img src="{% static 'images/Dairy_To_Daily_logo.png' %}" alt="Dairy to Daily Products" class="img-fluid" style="width: 20%; height: auto;">
+            </div>
+            
+            <p class="text-center" data-aos="fade-up" data-aos-delay="400">
+                At Dairy to Daily, we specialize in producing and delivering fresh cow milk and its by-products such as curd, cheese, and palkova. Our farm operates within a 50 km radius, ensuring freshness and quality in every product.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<!-- Farm Facility Section -->
+<section id="facility" class="mb-5 container">
+    <h2 class="text-center mb-3" data-aos="fade-up">Our Farm Facility</h2>
+    <div class="row g-3">
+        <div class="col-md-4" data-aos="fade-right" data-aos-delay="100">
+            <img src="{% static 'images/farm-view.avif' %}" alt="Farm View" class="img-fluid shadow-sm">
+        </div>
+        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <img src="{% static 'images/cow-at-farm.jpg' %}" alt="Cows at the Farm" class="img-fluid shadow-sm">
+        </div>
+        <div class="col-md-4" data-aos="fade-left" data-aos-delay="300">
+            <img src="{% static 'images/Dairy-Production-Unit.jpg' %}" alt="Dairy Production Unit" class="img-fluid shadow-sm">
+        </div>
+    </div>
+</section>
+
+<!-- Founder Section -->
+<section id="founders" data-aos="fade-up" data-aos-delay="400">
+    <div class="container">
+        <h2 class="text-center mb-4">Founders</h2>
+        <div class="row">
+            <!-- Founder 1 -->
+            <div class="col-md-6 mb-4 w-100 h-100">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="{% static 'images/founder.jpg' %}" alt="Founder 1" class="img-fluid mb-3 " style="max-width: 50%; ">
+                        <h3>John Doe</h3>
+                        <p>Founder & CEO</p>
+                        <p>John has been passionate about dairy farming since his childhood, and he decided to bring fresh dairy to the city.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Founder 2 -->
+            <div class="col-md-6 mb-4 w-100 h-100">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <img src="{% static 'images/co-founder.jpg' %}" alt="Founder 2" class="img-fluid mb-3" style="max-width: 100%; height: auto;">
+                        <h3>Jane Doe</h3>
+                        <p>Co-Founder & COO</p>
+                        <p>Jane's vision for sustainable farming has driven the success of Dairy to Daily, ensuring our farm's long-term growth.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

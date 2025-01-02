@@ -1,0 +1,75 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Blog | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/blog_content.css' %}">
+{% endblock styles %}
+
+{% block content %}
+    <!-- Blog Header -->
+    <section class="newspaper-layout mt-3"  >
+        <div class="container">
+            <header class="news-header" data-aos="fade-down">
+                <h1>The Dairy Daily Times</h1>
+                <p>Benefits of Organic Milk</p>
+            </header>
+
+            <div class="news-content">
+                <div class="main-image">
+                    <img src="/static/images/benefits-of-milk.jpg" alt="Dairy Farm" data-aos="zoom-in">
+                    <p class="caption">A glimpse into our dairy farm practices</p>
+                </div>
+                <div class="article" data-aos="fade-left">
+                    <h2 >Benefits of Organic Milk</h2>
+                    <p>Organic milk stands out as a healthier and more sustainable choice compared to conventional milk. Here's why choosing organic milk benefits you and the environment:</p>
+                    <h2>1. Free from Harmful Chemicals</h2>
+            <p>Organic milk comes from cows raised on farms where synthetic pesticides, herbicides, and fertilizers are avoided. This means the milk is free from residues of harmful chemicals, offering a purer and safer option for consumption.</p>
+            <h2>2. Higher Nutritional Value</h2>
+            <p>Studies have shown that organic milk often contains higher levels of essential nutrients like:</p>
+            <ul>
+                <li><strong>Omega-3 Fatty Acids:</strong>Known to support heart and brain health.</li>
+                <li><strong>Antioxidants:</strong>Helps protect cells from damage.</li>
+                <li><strong>Vitamins:</strong>Organic milk is rich in Vitamin E and beta-carotene, which promote healthy skin and vision.</li>
+            </ul>
+
+            <h2>3. No Antibiotics or Hormones</h2>
+            <p>Organic milk comes from cows that are not treated with growth hormones or antibiotics. This reduces the risk of antibiotic resistance and ensures the milk is natural and wholesome.</p>
+
+            <h2>4. Better Taste and Freshness</h2>
+            <p>Cows raised on organic farms graze on fresh, natural pastures, which enhances the flavor of their milk. The commitment to high-quality farming practices ensures you enjoy milk that is both fresh and delicious.</p>
+
+            <h2>5. Environmentally Friendly</h2>
+            <p>Organic farming practices prioritize sustainability by:</p>
+            <ul>
+                <li>Avoiding synthetic fertilizers that pollute water sources.</li>
+                <li>Enhancing soil health through natural composting and crop rotation.</li>
+                <li>Reducing the carbon footprint, making organic milk a greener choice.</li>
+            </ul>
+
+            <h2>6. Improved Animal Welfare</h2>
+            <p>Organic dairy farms emphasize the ethical treatment of cows. These farms provide:</p>
+            <ul>
+                <li>Access to open pastures and clean living environments.</li>
+                <li>A stress-free lifestyle, which directly contributes to the health of the cows and the quality of the milk.</li>
+            </ul>
+
+            <h2>7. Supports Local Farmers</h2>
+            <p>Choosing organic milk often means supporting smaller, local dairy farmers who are dedicated to sustainable and ethical farming. This fosters local economies and promotes fair-trade practices.</p>
+
+            <h2>Why Choose Organic Milk?</h2>
+            <p>Switching to organic milk is not just a healthier choice for you and your family but also a step toward a more sustainable and compassionate food system. By opting for organic, you embrace a lifestyle that values purity, nutrition, and the well-being of the planet.</p>
+                </div>
+                
+            </div>
+
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="blog-footer">
+        <div class="container">
+            <p>&copy; 2024 Dairy to Daily. All rights reserved.</p>
+        </div>
+    </footer>
+{% endblock content %}

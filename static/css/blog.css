@@ -1,0 +1,51 @@
+/* Blog Page Styling */
+.blog-page h1 {
+    font-size: 2.5rem;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.featured-blog img {
+    border-radius: 8px;
+}
+.featured-blog h2 {
+    font-size: 2rem;
+    color: #111;
+    margin-bottom: 15px;
+}
+.featured-blog p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+.blog-grid .blog-card {
+    background-color: #fff;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.blog-grid .blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.blog-grid img {
+    width: 100%;
+    height: auto;
+    border-bottom: 2px solid #ddd;
+}
+.blog-grid h5 {
+    font-size: 1.25rem;
+    color: #222;
+    margin-bottom: 10px;
+}
+.blog-grid p {
+    font-size: 0.9rem;
+    color: #555;
+}
+.blog-grid a.btn-outline-primary {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.blog-grid a.btn-outline-primary:hover {
+    background-color: #111;
+    color: #fff;
+}
+

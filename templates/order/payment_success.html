@@ -1,0 +1,116 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Payment | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-card {
+      background: #fff; /* White background for the card */
+      color: #000; /* Black text inside the card */
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 500px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .success-icon img {
+      width: 250px;
+      height: auto;
+      animation: popIn 1s ease-in-out;
+    }
+
+    .success-title {
+      font-size: 28px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .transaction-summary {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .transaction-summary h5 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .transaction-summary p {
+      margin: 5px 0;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn-container .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 50px;
+      transition: transform 0.2s;
+    }
+
+    .btn-container .btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Animations */
+    @keyframes popIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+{% endblock styles %}
+{% block content %}
+<div class="success-page">
+    <div class="success-card">
+      <!-- Success Icon GIF -->
+      <div class="success-icon">
+        <img src="{% static 'images/greentick-unscreen.gif' %}" alt="Success Icon">
+      </div>
+
+      <!-- Success Message -->
+      <h2 class="success-title">Payment Successful!</h2>
+      <p>Thank you for subscribing to the <strong>{{ plan_name }}</strong> plan.</p>
+
+      <!-- Transaction Summary -->
+      <div class="transaction-summary">
+        <h5>Transaction Summary</h5>
+        <p><strong>Amount Paid:</strong> {{ amount_paid }}</p>
+        <p><strong>Date:</strong> {{ transcation_date }}</p>
+    </div>
+
+      <!-- Buttons -->
+      <div class="btn-container">
+        <a href="#" class="btn btn-dark">Go to Home</a>
+        <a href="#" class="btn btn-outline-secondary">View Orders</a>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+{% block scripts %}
+
+{% endblock scripts %}

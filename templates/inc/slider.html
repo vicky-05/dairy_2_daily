@@ -1,0 +1,184 @@
+{% load static %}
+<style>
+        /* Section Styling */
+        .content-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            /* min-height: 100vh;  */
+            background-color: var(--bg-color);
+            overflow: hidden;
+            padding: 10px;
+        }
+    
+        /* Text Content */
+        .content-text {
+            flex: 1;
+            min-width: 300px; /* Ensure text never collapses below 300px */
+            max-width: 600px; /* Limit width for readability */
+            padding: 30px;
+            animation: slideInLeft 1.5s ease-out;
+            text-align: center; /* Center text for smaller screens */
+        }
+        .content-text h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .content-text p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+    
+    
+        /* Image Section */
+        .content-image {
+            width: 500px; /* Set a fixed width */
+            height: 90vh; /* Set a fixed height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Hide any overflow for large images */
+        }
+    
+        .content-image img {
+            width: 100%; /* Ensure the image fits the container width */
+            height: 100%; /* Ensure the image fits the container height */
+            object-fit: contain; /* Maintain aspect ratio and fill the container */
+            border-radius: 10px;
+            transition: all 0.5s ease; /* Smooth transition for changes */
+        }
+    
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: all 0.5s ease;
+        }
+    
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.5s ease;
+        }
+        .learn-more {
+            position: relative;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            background-color: #000;
+            color: var(--bg-color);
+            border: 2px solid #000;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+    
+        /* Bounce animation */
+        .learn-more:hover {
+            background-color: var(--bg-color);
+            color: #000;
+            border: 2px solid #000;
+            animation: bounce 0.6s ease-in-out;
+        }
+    
+        /* Animations */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    
+    
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    
+    
+        /* Mobile View Adjustments */
+        @media (max-width: 768px) {
+            .content-section {
+                flex-direction: column; /* Stack content vertically */
+                text-align: center;
+            }
+            .content-text, .content-image {
+                flex: 0 0 100%;
+                min-width: 0;
+                padding: 20px;
+                max-width: 100%; /* Take full width for smaller screens */
+            }
+            .content-text {
+                margin-bottom: 20px;
+            }
+        }
+</style>
+<!-- Content Section -->
+<div class="content-section">
+    <!-- Text Content -->
+    <div class="content-text" data-aos="fade-right" data-aos-duration="1500">
+        <h1>Fresh Milk Delivered Daily</h1>
+        <p>100% pure milk, directly from our farm to your home. Trusted by families for generations.</p>
+        <a href="#" class="btn learn-more">Learn More</a>
+    </div>
+
+    <!-- Image Content -->
+    <div class="content-image" data-aos="fade-left" data-aos-duration="1500">
+        <img id="slideshow-image" src="{% static 'images/DAIRY_TO_DAILY_UPDATED-1.png' %}" alt="Milk Delivery">
+    </div>
+</div>
+
+<script>
+                // Array of image URLs
+                const images = [
+                "{% static 'images/DAIRY_TO_DAILY_UPDATED-1.png' %}",
+                "{% static 'images/ghee-product.png' %}",
+                "{% static 'images/curd-23 (2).png' %}",
+                "{% static 'images/panner-our-product-slider.png' %}",
+            ];
+
+            let currentImageIndex = 0; // Track the current image index
+            const imageElement = document.getElementById("slideshow-image");
+
+            // Function to change the image
+            function changeImage() {
+                imageElement.classList.add("fade-out"); // Add fade-out animation
+
+                setTimeout(() => {
+                    // Change the image source
+                    currentImageIndex = (currentImageIndex + 1) % images.length;
+                    imageElement.src = images[currentImageIndex];
+
+                    // Add the fade-in class and remove fade-out
+                    imageElement.classList.remove("fade-out");
+                    imageElement.classList.add("fade-in");
+
+                    // Remove the fade-in class after animation
+                    setTimeout(() => imageElement.classList.remove("fade-in"),500);
+                }, 500); // Wait for fade-out animation to complete
+            }
+
+            // Change image every 5 seconds
+            setInterval(changeImage, 5000);
+</script>

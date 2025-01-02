@@ -1,0 +1,69 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Blog | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/blog_content.css' %}">
+{% endblock styles %}
+
+{% block content %}
+    <!-- Blog Header -->
+    <section class="newspaper-layout mt-3">
+        <div class="container">
+            <header class="news-header" data-aos="fade-down">
+                <h1>The Dairy Daily Times</h1>
+                <p>Why Fresh Milk is Best</p>
+            </header>
+    
+            <div class="news-content">
+                <div class="main-image">
+                    <img src="/static/images/organic-milk-Organic-Boosting1.jpg" alt="Dairy Farm" data-aos="zoom-in">
+                    <p class="caption">A glimpse into our dairy farm practices</p>
+                </div>
+                <div class="article" data-aos="fade-left">
+                    <h2 >Why Fresh Milk is Best</h2>
+                    <p>Fresh milk is often regarded as one of the most wholesome and nutritious beverages available. Unlike processed or long-life milk, fresh milk offers unparalleled taste, nutrition, and purity. Let’s explore why fresh milk stands out and why it should be your go-to choice.</p>
+                    <h2>1. Rich in Nutrients</h2>
+            <p>Fresh milk is packed with essential nutrients, including:</p>
+            <ul>
+                <li><strong>Calcium</strong>: Strengthens bones and teeth.</li>
+                <li><strong>Protein</strong>: Aids in muscle repair and growth.</li>
+                <li><strong>Vitamins</strong>: Rich in vitamin D, B12, and riboflavin.</li>
+                <li><strong>Minerals</strong>: Contains magnesium, potassium, and phosphorus, essential for overall health.</li>
+            </ul>
+            <p>Fresh milk retains its full nutritional profile, ensuring your body gets maximum benefits.</p>
+
+            <h2>2. No Preservatives or Additives</h2>
+            <p>Fresh milk is free from preservatives and artificial additives, making it a pure and natural choice. Unlike packaged or processed milk, fresh milk is delivered directly from the source, preserving its authentic quality.</p>
+
+            <h2>3. Better Taste</h2>
+            <p>The creamy texture and rich flavor of fresh milk are unmatched. Fresh milk has a natural sweetness and richness that is often lost during ultra-pasteurization or extended shelf-life treatments in packaged milk.</p>
+
+            <h2>4. Supports Local Farmers</h2>
+            <p>Choosing fresh milk often means supporting local dairy farmers. By opting for milk sourced from nearby farms, you help promote sustainable farming practices and strengthen the local economy.</p>
+
+            <h2>5. Minimal Processing</h2>
+            <p>Fresh milk undergoes minimal processing, ensuring it retains its natural enzymes and beneficial bacteria. These components can aid digestion and enhance overall gut health.</p>
+
+            <h2>6. Environmentally Friendly</h2>
+            <p>Fresh milk production typically involves shorter supply chains, reducing the carbon footprint. By choosing fresh milk, you contribute to environmentally sustainable practices.</p>
+
+            <h2>7. Delivered Straight to Your Door</h2>
+            <p>Fresh milk delivery services bring milk directly to your home, ensuring it reaches you within hours of milking. This ensures peak freshness and quality, unlike milk that has been stored for weeks in a supermarket.</p>
+
+            <h2>The Perfect Choice for Your Family</h2>
+            <p>Fresh milk is not just a drink; it’s a lifestyle choice that prioritizes health, supports local communities, and embraces sustainability. Whether you enjoy it as a drink, in your morning coffee, or as an ingredient in your favorite recipes, fresh milk is undoubtedly the best choice for you and your loved ones.</p>
+                </div>
+                
+            </div>
+    
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="blog-footer">
+        <div class="container">
+            <p>&copy; 2024 Dairy to Daily. All rights reserved.</p>
+        </div>
+    </footer>
+{% endblock content %}

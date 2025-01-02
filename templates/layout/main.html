@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Dairy to Daily{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/farmer-cow.png' %}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+    {% block styles %} {% endblock styles %}
+    <style>
+        .footer img.location-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px; /* Optional for rounded corners */
+        }
+        .nav-link:active {
+            background-color: inherit; /* Default background color */
+            color: inherit; /* Default text color */
+        }
+                
+
+    </style>
+</head>
+<body>
+    <!-- loader -->
+    <div id="loader">
+        <img src="{% static 'images/DAIRY_TO_DAIILY.png' %}" alt="Logo" width="300" height="300" >    
+    </div>
+    <header>
+        {% include 'inc/navbar.html' %}
+    </header>
+    <main>
+        {% block content %}
+               
+        {% endblock %}
+    
+    </main>
+    <footer>
+        {% include 'inc/footer.html' %}
+    </footer>
+</body>
+
+
+{% block scripts %} {% endblock scripts %}
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+    // Initialize AOS
+    AOS.init();
+
+    // Loader
+    window.addEventListener("load", () => {
+        const loader = document.getElementById("loader");
+        loader.classList.add("hidden");
+    });
+</script>
+</html>
+
