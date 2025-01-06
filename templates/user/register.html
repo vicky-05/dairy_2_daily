@@ -9,7 +9,6 @@
 
 <div class="register-container">
     <div class="register-box">
-        {% include 'inc/message.html' %}
         <h2>Create an Account</h2>
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}

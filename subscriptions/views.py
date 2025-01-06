@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from authentication.models import *
 from cryptography.fernet import Fernet
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.urls import reverse
 
 def subscription_plans(request):
@@ -88,11 +88,20 @@ def process_payment(request):
             cvv_encrypted=encrypted_cvv
         )
 
+         # Get current date and time (transaction date)
+        transaction_date = datetime.now()
+
+        # Calculate expiry date (28 days from the next day)
+        expiry_date = transaction_date + timedelta(days=28)
+        expiry_date = expiry_date.replace(hour=0, minute=0, second=0, microsecond=0)
+
         # Create the user subscription
         UserSubscription.objects.create(
             user=user,
             plan=plan,
             amount=plan.price_per_month,
+            start_date=transaction_date,
+            end_date=expiry_date
         )
 
         # Update the user's subscription

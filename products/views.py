@@ -29,7 +29,7 @@ def home(request):
     user_subscription = request.user.subscription if request.user.is_authenticated else None
     context = {
         'featured_product': featured_product,
-        'user_subscription': user_subscription
+        'user_subscription': user_subscription 
     } 
     return render(request, 'products/home.html', context)
 

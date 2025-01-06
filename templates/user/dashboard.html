@@ -1,0 +1,305 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Dashboard | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<div class="container-fluid main-layout">
+    <div class="row">
+        <!-- Sidebar (Desktop and Tablet View) -->
+        <nav class="sidebar col-md-3 col-lg-2 sidebar p-3 d-none d-md-block" id="sidebar">
+            <h2 class="text-center fw-bold">Dashboard</h2>
+            <ul class="nav flex-column mt-3">
+                <li class="nav-item"><a href="#" class="nav-link active">Overview</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">My Plan</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Tracking</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Wallet</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">By-products</a></li>
+                <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link text-danger">Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Sidebar -->
+        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="mobileSidebarLabel">Dashboard</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="#" class="nav-link active">Overview</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">My Plan</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Tracking</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Wallet</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">By-products</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link text-danger">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar Toggle Button -->
+        <button class="btn btn-dark d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <!-- Main Content -->
+        <div class="side-content col-md-9 col-lg-10">
+            <div class="container py-4">
+                <!-- Welcome Section -->
+                <div class="mb-4">
+                    <h2 class="fw-bold">Welcome, {{ user.username }}!</h2>
+                    <p>Here’s an overview of your account.</p>
+                </div>
+
+                {% if subscription %}
+                <!-- Selected Plan Section -->
+                <div class="card mb-4 shadow-lg border-0">
+                    <div class="card-header text-center bg-dark text-white">
+                        <h4 class="fw-bold">Your Plan</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-check fa-2x me-3 "></i>
+                            <div>
+                                <p class="mb-1"><strong>Plan Name:</strong></p>
+                                <p >{{ subscription.plan.name }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-tint fa-2x me-3 "></i>
+                            <div>
+                                <p class="mb-1"><strong>Quantity:</strong></p>
+                                <p >{{ subscription.plan.milk_quantity_per_day }} liters/day</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-hourglass-half fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Duration:</strong></p>
+                                <p >30 Days</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Start Date:</strong></p>
+                                <p >{{ subscription.start_date|date:"d-m-Y H:i" }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Expiry Date:</strong></p>
+                                <p >{{ subscription.end_date }}</p>
+                            </div>
+                        </div>
+                        <!-- Renew Button -->
+                        <div class="text-center mt-3">
+                            <button id="renewButton" class="btn track-btn btn fw-bold">
+                                
+                            <i class="fa-solid fa-arrows-rotate me-2"></i>Renew</button>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+            <!-- Wallet Section -->
+            <div class="card mb-4 shadow-lg border-0">
+            <div class="card-header text-center bg-dark ">
+                <h4 class="fw-bold text-white">Wallet</h4>
+            </div>
+            <div class="card-body text-center">
+                <p class="mb-3 fs-5">
+                    <i class="fa-solid fa-wallet fa-2x me-2 "></i>
+                    <strong>Current Balance:</strong> ₹250
+                </p>
+                <button class="btn btn-dark fw-bold add-money" data-bs-toggle="modal" data-bs-target="#addMoneyModal">
+                    <i class="fa-solid fa-plus me-2"></i>Add Money
+                </button>
+            </div>
+            </div>
+                <!-- Tracking Section -->
+                <div class="card mb-4 shadow-lg border-0">
+                    <div class="card-header text-center bg-dark text-white">
+                        <h4 class="fw-bold">Delivery Tracking</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-sun fa-2x me-3"></i>
+                            <div class="flex-grow-1">
+                                <p class="mb-1"><strong>Morning Delivery:</strong></p>
+                                <p >Delivered at 7:00 AM</p>
+                            </div>
+                            <!-- Cancel Button for Morning Delivery (only shown when pending) -->
+                            <button class="btn btn-outline-danger cancel-btn"  onclick="cancelDelivery('morning')">Cancel</button>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-moon fa-2x me-3 "></i>
+                            <div class="flex-grow-1">
+                                <p class="mb-1"><strong>Evening Delivery:</strong></p>
+                                <p >Pending</p>
+                            </div>
+                            <!-- Cancel Button for Evening Delivery (only shown when pending) -->
+                            <button class="btn btn-outline-danger cancel-btn" style="display: none;" onclick="cancelDelivery('evening')">Cancel</button>
+                        </div>
+                        <!-- Track More Button -->
+                        <div class="text-center">
+                            <button class="btn track-btn btn fw-bold mt-3">
+                                <i class="fa-solid fa-truck me-2"></i>Track More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                    <!-- Add Money Modal -->
+                    <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark text-white" style="border-radius: 10px;">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addMoneyModalLabel">
+                                    <i class="fa-solid fa-wallet me-2"></i>Add Money to Wallet
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Card Number Input -->
+                                <div class="mb-4">
+                                    <label for="cardNumber" class="form-label text-uppercase fw-bold">Card Number</label>
+                                    <div class="input-group">
+                                        <!-- Masked part of the card number -->
+                                        <span class="input-group-text bg-secondary text-white border-light" style="border-radius: 5px 0 0 5px;">
+                                            **** **** ****
+                                        </span>
+                                        <!-- Last 4 digits input -->
+                                        <input type="text" class="form-control bg-dark text-white border-light" 
+                                            id="cardNumber" placeholder="1234" maxlength="4" required
+                                            style="border-radius: 0 5px 5px 0; text-align: center; font-size: 1.2rem;">
+                                    </div>
+                                </div>
+
+                                <!-- PIN Input -->
+                                <div class="mb-4">
+                                    <label for="pinNumber" class="form-label text-uppercase fw-bold">Enter PIN</label>
+                                    <input type="password" class="form-control bg-dark text-white border-light" 
+                                        id="pinNumber" placeholder="••••" maxlength="4" required
+                                        style="text-align: center; font-size: 1.2rem; letter-spacing: 3px;">
+                                </div>
+
+                                <!-- Add Money Button -->
+                                <div class="text-center">
+                                    <button class="btn btn px-4 py-2 fw-bold">Add Money</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button type="button" class="btn btn" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-light">Confirm</button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+
+
+
+                <!-- By-products Section -->
+                <div class="card mb-4 bg-dark text-white">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">By-products</h4>
+                        
+                        <!-- Subscription Plan Selector -->
+                        <div class="text-center mb-4">
+                            <label for="subscriptionPlan" class="form-label text-white">Choose Your Subscription Plan:</label>
+                            <select id="subscriptionPlan" class="form-select bg-dark text-white border-light w-auto" onchange="applyDiscount()">
+                                <option value="none">No Plan</option>
+                                <option value="silver">Silver Plan - 5% Discount</option>
+                                <option value="gold">Gold Plan - 10% Discount</option>
+                                <option value="platinum">Platinum Plan - 15% Discount</option>
+                            </select>
+                        </div>
+                        
+                        <div class="row g-4" id="byProducts">
+                            <!-- Curd Product -->
+                            <div class="col-md-4 product-card">
+                                <div class="card bg-secondary border-light rounded shadow-lg">
+                                    <img src="https://via.placeholder.com/300x150?text=Curd" class="card-img-top rounded-top" alt="Curd">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title text-white">Curd</h5>
+                                        <p class="card-text text-white-50">
+                                            ₹<span class="original-price">50</span> <span class="discounted-price">50</span>
+                                        </p>
+                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cheese Product -->
+                            <div class="col-md-4 product-card">
+                                <div class="card bg-secondary border-light rounded shadow-lg">
+                                    <img src="https://via.placeholder.com/300x150?text=Cheese" class="card-img-top rounded-top" alt="Cheese">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title text-white">Cheese</h5>
+                                        <p class="card-text text-white-50">
+                                            ₹<span class="original-price">120</span> <span class="discounted-price">120</span>
+                                        </p>
+                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Palkova Product -->
+                            <div class="col-md-4 product-card">
+                                <div class="card bg-secondary border-light rounded shadow-lg">
+                                    <img src="https://via.placeholder.com/300x150?text=Palkova" class="card-img-top rounded-top" alt="Palkova">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title text-white">Palkova</h5>
+                                        <p class="card-text text-white-50">
+                                            ₹<span class="original-price">80</span> <span class="discounted-price">80</span>
+                                        </p>
+                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    function applyDiscount() {
+        // Get the selected plan
+        const plan = document.getElementById('subscriptionPlan').value;
+        const products = document.querySelectorAll('.product-card');
+        
+        // Define discounts for each plan
+        let discount = 0;
+        if (plan === 'silver') {
+            discount = 5; // 5% discount for Silver Plan
+        } else if (plan === 'gold') {
+            discount = 10; // 10% discount for Gold Plan
+        } else if (plan === 'platinum') {
+            discount = 15; // 15% discount for Platinum Plan
+        }
+        
+        // Loop through each product and apply the discount
+        products.forEach(product => {
+            const originalPrice = parseFloat(product.querySelector('.original-price').innerText);
+            const discountedPrice = originalPrice - (originalPrice * (discount / 100));
+            product.querySelector('.discounted-price').innerText = discountedPrice.toFixed(2);
+        });
+    }
+</script>
+{% endblock scripts %}

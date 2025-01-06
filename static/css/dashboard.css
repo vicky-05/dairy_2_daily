@@ -1,0 +1,63 @@
+
+        .sidebar {
+            background-color: #fff; /* Light grey */
+            color: #000;
+            min-height: 100vh;
+            
+        }
+        .sidebar h2 {
+            color: #000;
+        }
+        .sidebar .nav-link {
+            color: #000;
+            transition: color 0.3s ease;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #007bff; /* Blue for hover and active links */
+        }
+        .card {
+            background-color: #fff; /* White card background */
+            color: #000;
+            border: 1px solid #ddd; /* Subtle border */
+        }
+        .btn-outline-success, .btn-outline-primary {
+            color: #000;
+            border-color: #000;
+        }
+        .btn-outline-success:hover, .btn-outline-primary:hover {
+            background-color: #000;
+            color: #fff;
+        }
+        .card-img-top {
+            height: 150px;
+            object-fit: cover;
+        }
+        .track-btn {
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+        }
+        .track-btn:hover {
+            background-color: #fff;
+            color: #000;
+        }
+        input::placeholder {
+            color: #777; /* Subtle placeholder color */
+        }
+        input {
+            color: #000; /* Text color */
+        }
+        .modal-content {
+            background-color: #fff; /* White modal background */
+            color: #000;
+        }
+        .modal-header,
+        .modal-footer {
+            border: none; /* Remove default modal borders */
+        }
+        
+        .btn:hover {
+            background-color: #000; /* Black background on hover */
+            color: #fff; /* White text on hover */
+        }
+ 

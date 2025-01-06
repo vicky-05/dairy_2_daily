@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('products.urls')),
     path('authentication/', include('authentication.urls')),
     path('subscriptions/', include('subscriptions.urls')),
+    
 ]
 
 if settings.DEBUG:  # Serve media files only in debug mode

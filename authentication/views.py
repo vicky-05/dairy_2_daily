@@ -4,6 +4,10 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from .models import *
+
+
 
 
 User = get_user_model()  # Fetches the custom user model
@@ -57,3 +61,18 @@ def logout_page(request):
     logout(request)
     messages.success(request, "Logout Successfully")
     return redirect('login')
+
+@login_required
+def dashboard(request):
+    user = request.user
+
+    # Fetch the latest subscription details for the logged-in user
+    subscription = UserSubscription.objects.filter(user=user).order_by('-start_date').first()
+    
+
+    context = {
+        'user': user,
+        'subscription': subscription,
+    }
+
+    return render(request, 'user/dashboard.html', context)
