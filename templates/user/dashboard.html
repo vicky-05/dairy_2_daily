@@ -3,9 +3,19 @@
 {% block title %} Dashboard | Dairy to Daily {% endblock title %} 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+    .cancel-btn:hover {
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        
+    }
+</style>
 {% endblock styles %}
 
 {% block content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 <div class="container-fluid main-layout">
     <div class="row">
         <!-- Sidebar (Desktop and Tablet View) -->
@@ -78,14 +88,14 @@
                             <i class="fa-solid fa-hourglass-half fa-2x me-3"></i>
                             <div>
                                 <p class="mb-1"><strong>Duration:</strong></p>
-                                <p >30 Days</p>
+                                <p >28 Days</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
                             <div>
                                 <p class="mb-1"><strong>Start Date:</strong></p>
-                                <p >{{ subscription.start_date|date:"d-m-Y H:i" }}</p>
+                                <p >{{ subscription.start_date|date:"d-m-Y" }}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
@@ -121,37 +131,58 @@
             </div>
             </div>
                 <!-- Tracking Section -->
-                <div class="card mb-4 shadow-lg border-0">
-                    <div class="card-header text-center bg-dark text-white">
-                        <h4 class="fw-bold">Delivery Tracking</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fa-solid fa-sun fa-2x me-3"></i>
-                            <div class="flex-grow-1">
-                                <p class="mb-1"><strong>Morning Delivery:</strong></p>
-                                <p >Delivered at 7:00 AM</p>
-                            </div>
-                            <!-- Cancel Button for Morning Delivery (only shown when pending) -->
-                            <button class="btn btn-outline-danger cancel-btn"  onclick="cancelDelivery('morning')">Cancel</button>
-                        </div>
-                        <div class="d-flex align-items-center mb-3">
-                            <i class="fa-solid fa-moon fa-2x me-3 "></i>
-                            <div class="flex-grow-1">
-                                <p class="mb-1"><strong>Evening Delivery:</strong></p>
-                                <p >Pending</p>
-                            </div>
-                            <!-- Cancel Button for Evening Delivery (only shown when pending) -->
-                            <button class="btn btn-outline-danger cancel-btn" style="display: none;" onclick="cancelDelivery('evening')">Cancel</button>
-                        </div>
-                        <!-- Track More Button -->
-                        <div class="text-center">
-                            <button class="btn track-btn btn fw-bold mt-3">
-                                <i class="fa-solid fa-truck me-2"></i>Track More
-                            </button>
-                        </div>
-                    </div>
+{% if subscription %}
+<div class="card mb-4 shadow-lg border-0">
+    <div class="card-header text-center bg-dark text-white">
+        <h4 class="fw-bold">Delivery Tracking</h4>
+    </div>
+    <div class="card-body">
+        <!-- Morning Delivery -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-sun fa-2x me-3"></i>
+            <div class="flex-grow-1">
+                <p class="mb-1"><strong>Morning Delivery:</strong></p>
+                <p>{{ delivery_status.morning.status|default:"Pending" }}</p>
+            </div>
+            {% if delivery_status.morning and delivery_status.morning.status == "Pending" %}
+            <button class="btn btn-outline-danger cancel-btn" onclick="cancelDelivery('morning')">Cancel</button>
+            {% endif %}
+        </div>
+
+        <!-- Evening Delivery -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-moon fa-2x me-3"></i>
+            <div class="flex-grow-1">
+                <p class="mb-1"><strong>Evening Delivery:</strong></p>
+                <p>{{ delivery_status.evening.status|default:"Pending" }}</p>
+            </div>
+            {% if delivery_status.evening and delivery_status.evening.status == "Pending" %}
+            <button class="btn btn-outline-danger cancel-btn" onclick="cancelDelivery('evening')">Cancel</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Order Tracking Section -->
+<div class="card mb-4 shadow-lg border-0">
+    <div class="card-header text-center bg-dark text-white">
+        <h4 class="fw-bold">Order Tracking</h4>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="mb-1"><strong>Order ID:</strong> </p>
+                    <p class="mb-1"><strong>Product:</strong> </p>
+                    <p><strong>Status:</strong> </p>
                 </div>
+                <button class="btn btn-outline-danger cancel-btn" >Cancel</button>
+            </li>
+        </ul>
+    </div>
+</div>
+
 
 
 
@@ -202,71 +233,6 @@
                         </div>
                     </div>
                     </div>
-
-
-
-
-                <!-- By-products Section -->
-                <div class="card mb-4 bg-dark text-white">
-                    <div class="card-body">
-                        <h4 class="card-title text-center mb-4">By-products</h4>
-                        
-                        <!-- Subscription Plan Selector -->
-                        <div class="text-center mb-4">
-                            <label for="subscriptionPlan" class="form-label text-white">Choose Your Subscription Plan:</label>
-                            <select id="subscriptionPlan" class="form-select bg-dark text-white border-light w-auto" onchange="applyDiscount()">
-                                <option value="none">No Plan</option>
-                                <option value="silver">Silver Plan - 5% Discount</option>
-                                <option value="gold">Gold Plan - 10% Discount</option>
-                                <option value="platinum">Platinum Plan - 15% Discount</option>
-                            </select>
-                        </div>
-                        
-                        <div class="row g-4" id="byProducts">
-                            <!-- Curd Product -->
-                            <div class="col-md-4 product-card">
-                                <div class="card bg-secondary border-light rounded shadow-lg">
-                                    <img src="https://via.placeholder.com/300x150?text=Curd" class="card-img-top rounded-top" alt="Curd">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title text-white">Curd</h5>
-                                        <p class="card-text text-white-50">
-                                            ₹<span class="original-price">50</span> <span class="discounted-price">50</span>
-                                        </p>
-                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Cheese Product -->
-                            <div class="col-md-4 product-card">
-                                <div class="card bg-secondary border-light rounded shadow-lg">
-                                    <img src="https://via.placeholder.com/300x150?text=Cheese" class="card-img-top rounded-top" alt="Cheese">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title text-white">Cheese</h5>
-                                        <p class="card-text text-white-50">
-                                            ₹<span class="original-price">120</span> <span class="discounted-price">120</span>
-                                        </p>
-                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Palkova Product -->
-                            <div class="col-md-4 product-card">
-                                <div class="card bg-secondary border-light rounded shadow-lg">
-                                    <img src="https://via.placeholder.com/300x150?text=Palkova" class="card-img-top rounded-top" alt="Palkova">
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title text-white">Palkova</h5>
-                                        <p class="card-text text-white-50">
-                                            ₹<span class="original-price">80</span> <span class="discounted-price">80</span>
-                                        </p>
-                                        <button class="btn btn-dark px-4 py-2">Buy Now</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
               
                 
                 
@@ -279,27 +245,107 @@
 
 {% block scripts %}
 <script>
-    function applyDiscount() {
-        // Get the selected plan
-        const plan = document.getElementById('subscriptionPlan').value;
-        const products = document.querySelectorAll('.product-card');
-        
-        // Define discounts for each plan
-        let discount = 0;
-        if (plan === 'silver') {
-            discount = 5; // 5% discount for Silver Plan
-        } else if (plan === 'gold') {
-            discount = 10; // 10% discount for Gold Plan
-        } else if (plan === 'platinum') {
-            discount = 15; // 15% discount for Platinum Plan
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/authentication/get-user-orders/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const orderList = document.querySelector('.list-group');
+                orderList.innerHTML = ''; // Clear any placeholder text
+    
+                if (data.orders.length > 0) {
+                    data.orders.forEach(order => {
+                        const orderItem = `
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="mb-1"><strong>Order ID:</strong> ${order.id}</p>
+                                    <p class="mb-1"><strong>Product:</strong> ${order.product_name}</p>
+                                    <p><strong>Status:</strong> <span class="order-status">${order.status}</span></p>
+                                </div>
+                                ${order.status === 'Pending' ? `
+                                <button class="btn btn-outline-danger cancel-btn" data-order-id="${order.id}">
+                                    Cancel
+                                </button>` : ''}
+                                
+                            </li>
+                        `;
+                        orderList.insertAdjacentHTML('beforeend', orderItem);
+                    });
+                } else {
+                    orderList.innerHTML = '<p class="text-center text-muted">You have no recent orders to track.</p>';
+                }
+            } else {
+                alert(data.message || 'Failed to load orders.');
+            }
+        })
+        .catch(error => console.error('Error fetching orders:', error));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Open WebSocket connection
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/orders/');
+    
+        // Handle WebSocket connection open event
+        socket.onopen = function(event) {
+            console.log("WebSocket connection established.");
+        };
+    
+        // Handle WebSocket message event (order status updates)
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const orderId = data.order_id;
+            const status = data.status;
+    
+            // Find the order in the list and update its status
+            const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
+            if (orderItem) {
+                const statusElement = orderItem.querySelector('.order-status');
+                statusElement.textContent = `Status: ${status}`;
+            }
+        };
+    
+        // Handle WebSocket close event
+        socket.onclose = function(event) {
+            console.log("WebSocket connection closed.");
+        };
+    
+        // Handle WebSocket error event
+        socket.onerror = function(error) {
+            console.error("WebSocket Error: ", error);
+        };
+    });
+    
+
+    document.addEventListener('click', (event) => {
+        if (event.target.classList.contains('cancel-btn')) {
+            const orderId = event.target.dataset.orderId;
+    
+            if (confirm('Are you sure you want to cancel this order?')) {
+                fetch(`/authentication/cancel-order/${orderId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Order canceled successfully.');
+                        location.reload(); // Reload to update the order list
+                    } else {
+                        alert(data.message || 'Failed to cancel order.');
+                    }
+                })
+                .catch(error => console.error('Error canceling order:', error));
+            }
         }
-        
-        // Loop through each product and apply the discount
-        products.forEach(product => {
-            const originalPrice = parseFloat(product.querySelector('.original-price').innerText);
-            const discountedPrice = originalPrice - (originalPrice * (discount / 100));
-            product.querySelector('.discounted-price').innerText = discountedPrice.toFixed(2);
-        });
-    }
+    });
+    
 </script>
 {% endblock scripts %}

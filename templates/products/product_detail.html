@@ -136,12 +136,13 @@
                             {% endif %}
                         </a>
                         
-                        <button class="btn btn-lg " style="background-color: black; color: white;">Buy Now</button>
+                        <a href="{% url 'process_order' product.slug discounted_price|floatformat:2|default:product.price %}" class="btn btn-lg " style="background-color: black; color: white;" data-slug="{{ product.slug }}">Buy Now</a>
                     </div>
                     {% else %}
                     <div class="d-flex justify-content-start">
                         <a href="{% url 'login' %}" class="btn btn-lg btn-success me-3" style="background-color: black; color: white;">Add to Cart</a>
-                        <button class="btn btn-lg " style="background-color: black; color: white;">Buy Now</button>
+                        <a href="{% url 'login' %}" class="btn btn-lg " style="background-color: black; color: white;">Buy Now</a>
+                        
                     </div>
                     {% endif %}
 

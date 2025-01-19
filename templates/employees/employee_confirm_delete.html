@@ -1,0 +1,17 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Delete Employee | Dairy to Daily {% endblock title %}
+{% block styles %}
+{% endblock styles %}
+
+{% block content %}
+<body>
+    <h1>Are you sure you want to delete this employee?</h1>
+    <p>Employee: {{ employee.name }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete</button>
+    </form>
+    <a href="{% url 'employee_list' %}">Cancel</a>
+</body>
+{% endblock content %}

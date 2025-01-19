@@ -6,7 +6,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from .models import *
-
+from products.models import Product
+from orders.models import Order
+from django.http import JsonResponse
 
 
 
@@ -67,12 +69,45 @@ def dashboard(request):
     user = request.user
 
     # Fetch the latest subscription details for the logged-in user
-    subscription = UserSubscription.objects.filter(user=user).order_by('-start_date').first()
+    subscription = UserSubscription.objects.filter(user=user).first()
     
 
     context = {
         'user': user,
         'subscription': subscription,
+        
     }
 
     return render(request, 'user/dashboard.html', context)
+
+@login_required
+def get_user_orders(request):
+    try:
+        user_orders = Order.objects.filter(user=request.user).values(
+            'id', 'product_name', 'status', 'amount'
+        )
+        orders = list(user_orders)  # Convert QuerySet to a list of dictionaries
+        return JsonResponse({'success': True, 'orders': orders})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+    
+def cancel_order(request, order_id):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            try:
+                # Retrieve the order
+                order = Order.objects.get(id=order_id, user=request.user)
+
+                # Check if the order is already canceled
+                if order.status == 'Canceled':
+                    return JsonResponse({"success": False, "message": "Order is already canceled."})
+
+                # Update the status to canceled
+                order.status = 'Canceled'
+                order.save()
+
+                return JsonResponse({"success": True, "message": "Order canceled successfully."})
+            except Order.DoesNotExist:
+                return JsonResponse({"success": False, "message": "Order not found."})
+        return JsonResponse({"success": False, "message": "User not authenticated."})
+    return JsonResponse({"success": False, "message": "Invalid request method."})

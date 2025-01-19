@@ -137,13 +137,16 @@ def add_to_cart(request, slug):
     # Retrieve the product
     product = get_object_or_404(Product, slug=slug)
 
-    # Calculate discounted price if the user has a subscription
+    # Initialize discounted price to the product's price
+    discounted_price = product.price
+
+    # Check if the user is authenticated and has a subscription
     if request.user.is_authenticated and hasattr(request.user, 'subscription'):
         subscription = request.user.subscription
-        discount_percentage = Decimal(subscription.discount_on_byproducts)
-        discounted_price = product.price * (1 - discount_percentage / 100)
-    else:
-        discounted_price = product.price
+        if subscription and hasattr(subscription, 'discount_on_byproducts') and subscription.discount_on_byproducts:
+            discount_percentage = Decimal(subscription.discount_on_byproducts)
+            discounted_price = product.price * (1 - discount_percentage / 100)
+
 
     # Get the cart from the session (initialize if it doesn't exist)
     cart = request.session.get('cart', {})

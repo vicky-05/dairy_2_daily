@@ -8,7 +8,7 @@
 
 {% endblock styles %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-2">
     <h2 class="text-center mb-4 section-header text-uppercase">Your Cart</h2>
 
     <!-- Cart Layout with Divider -->
@@ -32,7 +32,9 @@
                             </a>
                         </div>
                         {% endfor %}
-
+                        <div class="cart-footer">
+                            <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
+                        </div>
 
                         <!-- Cart Total Section -->
                         <div class="cart-total mt-3">
@@ -48,6 +50,9 @@
                                 <br>
                                 Your cart is empty.
                             </p>
+                            <div class="cart-footer">
+                                <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
+                            </div>
                             
                         </div>
                         
@@ -92,9 +97,7 @@
                 </div>
             </div>
 
-            <div class="cart-footer">
-                <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
-            </div>
+            
         </div>
 
     </div>

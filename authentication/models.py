@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from subscriptions.models import SubscriptionPlan  # Import your SubscriptionPlan model
 from cryptography.fernet import Fernet
 from django.conf import settings
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 class CustomUser(AbstractUser):
     subscription = models.ForeignKey(
@@ -29,6 +31,29 @@ class Address(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     pincode_area = models.ForeignKey(PincodeArea, on_delete=models.CASCADE)
     address = models.TextField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'pincode_area', 'address'], 
+                name='unique_user_address'
+            )
+        ]
+
+    def save(self, *args, **kwargs):
+        # Check if an identical address already exists for the user
+        existing_address = Address.objects.filter(
+            user=self.user, 
+            pincode_area=self.pincode_area, 
+            address=self.address
+        ).first()
+        
+        if existing_address:
+            # Return the existing address instead of creating a new one
+            self.id = existing_address.id
+        else:
+            # Save the new address if it doesn't exist
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.address}, {self.pincode_area.area}, {self.pincode_area.pincode}"
@@ -82,3 +107,11 @@ class UserSubscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.plan.name}"
+    
+# Signal to update the CustomUser subscription field when a UserSubscription is deleted
+@receiver(post_delete, sender=UserSubscription)
+def update_user_subscription(sender, instance, **kwargs):
+    user = instance.user
+    if user.subscription == instance.plan:
+        user.subscription = None  # Reset the subscription field
+        user.save()

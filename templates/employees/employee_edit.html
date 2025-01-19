@@ -1,0 +1,17 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Edit Employee | Dairy to Daily {% endblock title %}
+{% block styles %}
+{% endblock styles %}
+
+{% block content %}
+<body>
+    <h1>Edit Employee Details</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Employee</button>
+    </form>
+    <a href="{% url 'employee_list' %}">Back to Employee List</a>
+</body>
+{% endblock content %}

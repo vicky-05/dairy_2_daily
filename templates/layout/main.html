@@ -42,18 +42,22 @@
     <div id="loader">
         <img src="{% static 'images/DAIRY_TO_DAIILY.png' %}" alt="Logo" width="300" height="300" >    
     </div>
-    <header>
-        {% include 'inc/navbar.html' %}
-    </header>
+    {% block navbar %}
+        <header>
+            {% include 'inc/navbar.html' %}
+        </header>
+    {% endblock %}  
     <main>
         {% block content %}
                
         {% endblock %}
     
     </main>
-    <footer>
-        {% include 'inc/footer.html' %}
-    </footer>
+    {% block footer %}
+        <footer>
+            {% include 'inc/footer.html' %}
+        </footer>
+    {% endblock %}
 </body>
 
 
