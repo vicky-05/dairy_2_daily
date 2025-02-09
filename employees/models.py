@@ -6,6 +6,12 @@ from django.conf import settings
 from django.shortcuts import render
 
 class Employee(models.Model):
+    ORDER_TYPE_CHOICES = [
+        ('Subscription', 'Subscription Orders'),
+        ('Product', 'Product Orders'),
+        ('Both', 'Both Subscription and Product Orders'),  # Optional, for flexibility
+    ]
+
     employee_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=15)
@@ -20,6 +26,12 @@ class Employee(models.Model):
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="employees"
     )  # Admin who added the employee
+    manage_order_type = models.CharField(
+        max_length=20,
+        choices=ORDER_TYPE_CHOICES,
+        default='Product',  # Default to Product Orders
+        help_text="Specify if the employee manages Subscription or Product orders.",
+    )
 
     def save(self, *args, **kwargs):
         if not self.password:

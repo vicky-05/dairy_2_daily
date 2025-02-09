@@ -128,7 +128,7 @@
 }
 
 .testimonial-item p::before {
-    content: "“"; /* Left quote icon */
+    content: """\201C"; /* Left quote icon */
     font-size: 2rem;
     color: var(--primary-color);
     position: absolute;

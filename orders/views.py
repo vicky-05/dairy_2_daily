@@ -6,6 +6,10 @@ from products.models import Product
 from django.shortcuts import render, get_object_or_404
 import json
 from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
+from django.contrib import messages
+from django.shortcuts import redirect
+
 
 
 def process_order(request, slug, price):
@@ -16,17 +20,23 @@ def process_order(request, slug, price):
     product = get_object_or_404(Product, slug=slug)
 
     amount = float(price)
-     
+    
+    user_wallet=request.user.balance
+
 
     context = { 
         'pincodes': pincodes,
         'product': product,
-        'amount': amount
+        'amount': amount,
+        'user_wallet':user_wallet
 
     }
 
 
     return render(request, 'order/product_order.html', context=context)
+
+
+
 
 def get_areas_by_pincode(request, pincode):
     if request.method == "GET":
@@ -41,16 +51,18 @@ def create_order(request, slug):
     if request.method == 'POST':
         data = json.loads(request.body)
 
-         # Retrieve the product using the slug
+        # Retrieve the product using the slug
         product = get_object_or_404(Product, slug=slug)
         product_name = slug.replace('-', ' ').capitalize()
 
-
         try:
+            user_wallet = request.user.balance
+            remaining_balance = Decimal(data.get("remaining_balance"))  # Remaining balance after deduction
+
             # Create the Order
             order = Order.objects.create(
                 user=request.user,
-                product_name=product,  # Use the product's actual name
+                product_name=product,
                 product_slug=slug,
                 amount=data.get("amount"),
             )
@@ -72,15 +84,27 @@ def create_order(request, slug):
             payment.raw_cvv = data.get("cvv")
             payment.save()
 
+            user_wallet = request.user  
+            user_wallet.balance = remaining_balance  
+            user_wallet.save() 
+
+            messages.success(request, "Order created successfully!")
+
             return JsonResponse({"success": True, "message": "Order created successfully!", "order_id": order.id})
 
         except Exception as e:
+            messages.error(request, f"Failed to create order: {str(e)}")
             return JsonResponse({"success": False, "message": str(e)})
 
     return JsonResponse({"success": False, "message": "Invalid request method."})
 
+
 def order_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)  # Ensure order belongs to the logged-in user
+
+    messages.success(request, f"Order #{order_id} was successfully placed!")
+
     context = {'order': order}
-    return render(request, 'order/order_success.html',context=context)
+    return render(request, 'order/order_success.html', context=context)
+
 

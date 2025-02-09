@@ -7,6 +7,7 @@ from cryptography.fernet import Fernet
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from django.urls import reverse
+from django.contrib import messages
 
 def subscription_plans(request):
     plans = SubscriptionPlan.objects.all()
@@ -108,7 +109,8 @@ def process_payment(request):
         user.subscription = plan
         user.save()
 
-         # Return JSON response with redirect URL
+        # Return JSON response with redirect URL
+        messages.success(request, "Payment successful!")
         return JsonResponse({'status': 'success', 'redirect_url': reverse('payment-success')})
 
 

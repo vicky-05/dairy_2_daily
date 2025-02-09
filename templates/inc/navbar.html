@@ -23,11 +23,11 @@
                     <a class="nav-link" href="{% url 'about' %}" style="animation: fadeInSlide 1.2s;">About</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="byProductDropdown" role="button" aria-expanded="false">Product</a>
+                    <a class="nav-link dropdown-toggle" href="{% url 'product_collection' %}" id="byProductDropdown" role="button" aria-expanded="false">Product</a>
                     <ul class="dropdown-menu border-0 shadow">
                         {% for product in products %}
                         <li class="dropdown-item d-flex align-items-center">
-                            <a href="#" class=" nav-link me-2">{{ product.name }}</a>
+                            <a href="{% url 'product_detail' product.slug %}" class=" nav-link me-2">{{ product.name }}</a>
                             <img src="{{ product.image.url }}" alt="Curd" class="preview-img">
                         </li>
                         {% endfor %}
@@ -62,14 +62,39 @@
                 {% if user.is_authenticated %}
                     <!-- Authenticated User Section -->
                     <div class="d-flex align-items-center">
-                        <!-- User Profile Button -->
-                        <a href="#" class="btn btn-dark d-flex align-items-center me-2" style="animation: fadeIn 1s;">
-                            <i class="bi bi-person-circle fs-4 me-2"></i> {{ user.username }}
+                        <ul class="navbar-nav mx-auto">
+                                <!-- Authenticated User Section -->
+                                <li class="nav-item dropdown user-dropdown">
+                                    <a class="nav-link dropdown-toggle btn btn-dark d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="40" height="40">
+                                    </a>
+                                    <ul class="dropdown-menu border-0 shadow">
+                                        <li class="dropdown-item d-flex align-items-center">
+                                            <a href="{% url 'profile_settings' %}" class="nav-link me-2"><i class="bi bi-gear me-2"></i>{{ user.username }}</a>
+                                        </li>
+                                        <li class="dropdown-item d-flex align-items-center">
+                                            <a href="{% url 'dashboard' %}" class="nav-link me-2"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                                        </li>
+                                        <li class="dropdown-item d-flex align-items-center">
+                                            <a href="{% url 'logout' %}" class="nav-link text-danger me-2"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                        </ul>
+                        <!-- Cart Button with Item Count Badge -->
+                        <a href="{% url 'cart_page' %}" class="btn btn-dark d-flex align-items-center me-3 position-relative cart-btn" style="animation: fadeIn 1.2s;">
+                            <i class="bi bi-cart-fill fs-4 cart-icon"></i>
+                            {% if request.session.cart_items_count and request.session.cart_items_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
+                                {{ request.session.cart_items_count }}
+                            </span>
+                            {% else %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
+                                0
+                            </span>
+                            {% endif %}
                         </a>
-                        <!-- Logout Button -->
-                        <a href="{% url 'logout' %}" class="btn btn-outline-dark d-flex align-items-center" style="animation: fadeIn 1s;">
-                            <i class="bi bi-box-arrow-right fs-4 me-2"></i> Logout
-                        </a>
+                        
                     </div>
                 {% else %}
                 <a href="{% url 'register' %}" class="btn btn-dark me-lg-2 mx-lg-2" style="animation: growIn 1s;">Sign Up</a>

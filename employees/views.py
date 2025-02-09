@@ -9,8 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 from orders.models import Order
-from channels.layers import get_channel_layer
-from django.http import JsonResponse
+from django.db.models import Q
 
 
 
@@ -68,6 +67,7 @@ def employee_login(request):
                 # Store the employee ID in the session to track the logged-in employee
                 request.session['employee_id'] = employee.employee_id
                 request.session['employee_area'] = employee.area.area
+                
                 messages.success(request, "Login successful")
                 return redirect('employee_dashboard')  # Redirect to the employee dashboard
             else:
@@ -79,19 +79,25 @@ def employee_login(request):
 
 
 def employee_dashboard(request):
-    # Check if the employee is logged in by verifying the session
+    # Check if the employee is logged in
     employee_id = request.session.get('employee_id')
     if not employee_id:
         messages.error(request, "You must be logged in to access the dashboard.")
-        return redirect('employee_login')  # Redirect to login page if not logged in
+        return redirect('employee_login')
 
     try:
-        employee = Employee.objects.get(employee_id=employee_id)  # Fetch employee by employee_id
+        employee = Employee.objects.get(employee_id=employee_id)
     except Employee.DoesNotExist:
         messages.error(request, "Employee not found.")
-        return redirect('employee_login')  # Redirect to login page if employee not found
+        return redirect('employee_login')
 
-    return render(request, 'employees/employee_dashboard.html', {'employee': employee})
+    # Pass the manage_order_type to the template
+    context = {
+        'employee': employee,
+        'manage_order_type': employee.manage_order_type,
+    }
+    return render(request, 'employees/employee_dashboard.html', context)
+
 
 def employee_logout(request):
     logout(request)
@@ -99,9 +105,10 @@ def employee_logout(request):
 
 def manage_orders(request):
     # Fetch the employee area from the session
+    employee_id = request.session.get('employee_id')
+    employee = Employee.objects.get(employee_id=employee_id)
     employee_area = request.session.get('employee_area')
     print(employee_area)
-
     if not employee_area:
         # Handle missing employee area
         messages.error(request, "No area is assigned to the employee.")
@@ -109,51 +116,39 @@ def manage_orders(request):
 
     # Fetch orders that match the employee area and are Pending
     orders = Order.objects.filter(
-        shipping_details__area=employee_area,  # Match area
-        status="Pending"  # Only Pending orders
-    ).select_related('shipping_details')  # Optimize query
+        Q(shipping_details__area=employee_area),  # Match area
+        Q(status='Pending') | Q(status='Shipping')  # Include both 'Pending' and 'Shipping' statuses
+    ).select_related('shipping_details')
+    
+    context = {
+        'orders': orders,
+        'employee_area': employee_area,
+        'manage_order_type': employee.manage_order_type,
+    }
 
-    return render(request, 'employees/employee_task.html', {'orders': orders})
+    return render(request, 'employees/employee_task.html', context)
 
-def start_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
+def subscription_orders(request):
+    # Fetch the employee area from the session
+    employee_id = request.session.get('employee_id')
+    employee = Employee.objects.get(employee_id=employee_id)
+    employee_area = request.session.get('employee_area')
+    print(employee_area)
+    if not employee_area:
+        # Handle missing employee area  
+        messages.error(request, "No area is assigned to the employee.")
+        return redirect('employee_dashboard')
 
-    if order.status != 'Pending':
-        return JsonResponse({"success": False, "message": f"Order #{order.id} cannot be started because it's already {order.status}."})
+    # Fetch orders that match the employee area and are Pending
+    orders = Order.objects.filter(
+        Q(shipping_details__area=employee_area),  # Match area
+        Q(status='Pending') | Q(status='Shipping')  # Include both 'Pending' and 'Shipping' statuses
+    ).select_related('shipping_details')
+    
+    context = {
+        'orders': orders,
+        'employee_area': employee_area,
+        'manage_order_type': employee.manage_order_type,
+    }
 
-    order.status = 'Shipping'
-    order.save()
-
-    # Send the updated status to WebSocket clients
-    channel_layer = get_channel_layer()
-    channel_layer.group_send(
-        f'order_{order.id}',  # Use the group name based on order_id
-        {
-            'type': 'order_status_update',
-            'status': 'Shipping'
-        }
-    )
-
-    return JsonResponse({"success": True, "message": f"Order #{order.id} is now in Shipping status."})
-
-
-def deliver_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    if order.status != 'Shipping':
-        return JsonResponse({"success": False, "message": f"Order #{order.id} cannot be delivered because it's not in Shipping status."})
-
-    order.status = 'Successful'
-    order.save()
-
-    # Send the updated status to WebSocket clients
-    channel_layer = get_channel_layer()
-    channel_layer.group_send(
-        f'order_{order.id}',  # Use the group name based on order_id
-        {
-            'type': 'order_status_update',
-            'status': 'Successful'
-        }
-    )
-
-    return JsonResponse({"success": True, "message": f"Order #{order.id} has been successfully delivered."})
+    return render(request, 'employees/subscription_task.html', context)

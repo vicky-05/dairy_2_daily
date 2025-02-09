@@ -1,0 +1,112 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Profile Settings | Dairy to Daily {% endblock title %} 
+
+{% block styles %}
+<style>
+    .profile-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: auto;
+        text-align: center;
+    }
+    .profile-img-container {
+        position: relative;
+        display: inline-block;
+    }
+    .profile-img {
+        border: 3px solid #228b22;
+        object-fit: cover;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+    }
+    .profile-img:hover {
+        transform: scale(1.05);
+    }
+    .upload-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        padding: 6px 10px;
+        font-size: 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .profile-img-container:hover .upload-overlay {
+        opacity: 1;
+    }
+    .custom-file-input {
+        display: none;
+    }
+    .btn-primary {
+        background-color: #228b22;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #1a661a;
+    }
+    .form-control {
+        border-radius: 5px;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+{% include 'inc/toast.html' %}
+<div class="container mt-4 mb-4">
+    <div class="profile-card">
+        <h2 class="mb-3">Profile Settings</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Profile Image with Overlay Upload Button -->
+            <div class="profile-img-container">
+                <img id="profileImage" 
+                     src="{{ user.profile_picture.url }}" 
+                     alt="Profile Picture" 
+                     class="profile-img shadow-sm">
+                <label for="fileInput" class="upload-overlay">
+                    <i class="bi bi-camera me-1"></i> Change
+                </label>
+            </div>
+            <input type="file" name="profile_picture" id="fileInput" class="custom-file-input" accept="image/*">
+            
+            <div class=" mb-3 mt-4">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for Live Image Preview -->
+<script>
+    document.getElementById("fileInput").addEventListener("change", function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById("profileImage").src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+{% endblock content %}

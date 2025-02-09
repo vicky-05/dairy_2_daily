@@ -10,6 +10,6 @@ urlpatterns = [
     path('employee/dashboard/', views.employee_dashboard, name='employee_dashboard'),
     path('employee/logout/', views.employee_logout, name='employee_logout'),
     path('manage-orders/', views.manage_orders, name='manage_product_orders'),
-    path('order/start/<int:order_id>/', views.start_order, name='start_order'),  # For starting the order
-    path('order/deliver/<int:order_id>/', views.deliver_order, name='deliver_order'),  # For delivering the order
+    path('subscription-orders/', views.subscription_orders, name='subscription_orders'),
+
 ]

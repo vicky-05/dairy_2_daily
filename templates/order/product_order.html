@@ -81,7 +81,7 @@
         border: 1px solid #ccc;
         border-radius: 5px;
     }
-    .order-container input[type="text"]#card-number, input[type="text"]#expiry-date, input[type="password"]#cvv, input[type="text"]#amount {
+    .order-container input[type="text"]#card-number, input[type="text"]#expiry-date, input[type="password"]#cvv, input[type="text"]#amount, input[type="text"]#wallet {
         font-family: 'Courier New', Courier, monospace;
         font-size: 16px;
         padding: 10px;
@@ -166,8 +166,26 @@
                 </div>
                 <div class="mb-3">
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="text" class="form-control" id="amount" value=" {{ amount }}" readonly> 
+                    <input type="text" class="form-control" id="amount" value="{{ amount }}" readonly> 
                 </div>
+                
+                {% if user_wallet > 0 %}
+                <div class="mb-3">
+                    <label for="wallet" class="form-label">Your Wallet</label>
+                    <input type="text" class="form-control" id="wallet" value="{{ user_wallet }}" readonly>
+                
+                    <button type="button" class="btn btn-primary w-100 mt-2" onclick="useWallet()" id="add-btn">Add</button>
+                
+                    <p id="remaining-text" class="mt-2 text-danger" style="display: none;"></p>
+                
+                        <input type="hidden" name="final_amount" id="final_amount">
+                </div>
+                {% else %}
+                <input id="wallet" type="text" value="{{ user_wallet }}" readonly>
+                <p class="text-danger">You have no money in your wallet.</p>
+
+                {% endif %}
+                
             </form>
             <button type="button" class="btn btn-primary w-100 mt-4" onclick="validateForm()">Submit</button>
         </div>
@@ -268,6 +286,9 @@
         const shippingForm = document.getElementById('shippingForm');
         const paymentForm = document.getElementById('paymentForm');
         const slug = "{{ product.slug }}"; // Embed the slug in a JavaScript variable
+        const amount = parseFloat(document.getElementById('amount').value);  // Get the total amount
+        const walletBalance = parseFloat(document.getElementById('wallet').value);  // Get current wallet balance
+        const remainingBalance = walletBalance;  // Calculate the remaining balance after purchase
         const data = {
             pincode: shippingForm.pincode.value,
             area: shippingForm.area.value,
@@ -276,6 +297,7 @@
             expiry_date: paymentForm['expiry-date'].value,
             cvv: paymentForm.cvv.value,
             amount: document.getElementById('amount').value,
+            remaining_balance: remainingBalance
         };
 
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -299,7 +321,27 @@
         .catch(error => console.error('Error:', error));
     }
     
-    
+    function useWallet() {
+        let amount = parseFloat(document.getElementById("amount").value);
+        let walletBalance = parseFloat(document.getElementById("wallet").value);
+        let remainingText = document.getElementById("remaining-text");
+        let walletForm = document.getElementById("wallet-form");
+        let finalAmountInput = document.getElementById("final_amount");
+        let addBtn = document.getElementById("add-btn");
+
+        if (walletBalance >= amount) {
+            let remainingBalance = walletBalance - amount;
+            document.getElementById("wallet").value = remainingBalance.toFixed(2);
+            remainingText.style.display = "none";
+            finalAmountInput.value = remainingBalance;
+        } else {
+            let remainingRequired = amount - walletBalance;
+            remainingText.innerHTML = `Insufficient balance! You need ₹${remainingRequired.toFixed(2)} more.`;
+            remainingText.style.display = "block";
+            return;  // Stop execution if not enough balance
+        }
+        addBtn.style = "display:none";
+    }
     
 </script>
 {% endblock scripts %}

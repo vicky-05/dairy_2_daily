@@ -1,0 +1,249 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Subscription Delivery Tracking | Dairy to Daily {% endblock title %} 
+
+{% block styles %}
+<style>
+    /* Timeline Container - Now in Row */
+.timeline {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 50px 50px 0 50px;
+}
+
+/* Step */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 200px;
+    text-align: center;
+}
+
+/* Icon Container */
+.icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+/* Step Icons */
+.step-icon {
+    font-size: 1.5rem;
+    color: #666;
+    transition: color 0.3s, transform 0.3s, background-color 0.3s;
+}
+
+/* Step Labels */
+.step-label {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Active Step */
+.step.active .icon-container {
+    background-color: #007bff;
+}
+
+.step.active .step-icon {
+    color: #fff;
+    transform: scale(1.3);
+}
+
+/* Completed Step */
+.step.completed .icon-container {
+    background-color: #28a745;
+}
+
+.step.completed .step-icon {
+    color: #fff;
+}
+
+/* Use border as a horizontal line instead of separate divs */
+.step.with-border::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -60px;
+    width: 200px; /* Horizontal line width */
+    height: 4px;
+    background-color: #666;
+    transform: translateY(-50%);
+}
+
+/* Change line color for completed steps */
+.step.completed.with-border::before {
+    background-color: #28a745;
+}
+
+/* Hide the first step's line */
+.step:first-child::before {
+    display: none;
+}
+
+</style>
+{% endblock styles %}
+
+{% block content %}
+<!-- Status Message -->
+<div class="timeline">
+    {% for step in required_steps %}
+        <!-- Step -->
+        <div class="step {% if not forloop.first %} with-border {% endif %}" id="step-{{ step|slugify }}">
+            <div class="icon-container">
+                {% if forloop.last %}
+                    <i class="fa-solid fa-check step-icon"></i> <!-- Change last step icon to a tick -->
+                {% elif step == "Farm" %}
+                    <i class="fa-solid fa-tractor step-icon"></i>
+                {% else %}
+                    <i class="fa-solid fa-location-dot step-icon"></i>
+                {% endif %}
+            </div>
+            <p class="step-label fw-bold text-uppercase mt-5">{{ step }}</p>
+            <p class="delay-time text-danger fw-bold " id="delay-{{ step|slugify }}"></p>
+        </div>
+    {% endfor %}
+
+</div>
+<div id="delivery-status" class="text-center fw-bold text-uppercase mt-3 mb-4"></div>
+
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    const ws = new WebSocket(`ws://${window.location.host}/ws/subscriptions/`);
+
+    const statusMessage = document.getElementById("delivery-status");
+    
+    //  Get current time
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const todayDate = now.toISOString().split("T")[0]; // YYYY-MM-DD
+    
+    //  Function to determine session type
+    const getCurrentSession = () => {
+        return (hours >= 5 && hours < 14) ? "morning" : "afternoon";
+    };
+    
+    //  Function to get localStorage key based on session
+    const getStorageKey = (type) => `completedSteps_${type}`;
+
+    //  Function to reset tracking at specific times
+    const resetTracking = () => {
+        const lastMorningReset = localStorage.getItem("lastMorningReset");
+        const lastAfternoonReset = localStorage.getItem("lastAfternoonReset");
+    
+        // Reset at 5:00 AM
+        if (hours === 5 && minutes === 0 && lastMorningReset !== todayDate) {
+            console.log("Resetting morning tracking at 5:00 AM...");
+            localStorage.removeItem(getStorageKey("morning"));
+            localStorage.removeItem("delays_morning");
+            localStorage.setItem("lastMorningReset", todayDate);
+            setTimeout(() => location.reload(), 500);
+        }
+    
+        // Reset at 2:00 PM
+        if (hours === 14 && minutes === 0 && lastAfternoonReset !== todayDate) {
+            console.log("Resetting afternoon tracking at 2:00 PM...");
+            localStorage.removeItem(getStorageKey("afternoon"));
+            localStorage.removeItem("delays_afternoon");
+            localStorage.setItem("lastAfternoonReset", todayDate);
+            setTimeout(() => location.reload(), 500);
+        }
+    };
+    
+    //  Load previous tracking progress from `localStorage`
+    const loadTrackingProgress = () => {
+        resetTracking(); // Ensure reset is done at correct time
+    
+        const sessionType = getCurrentSession();
+        const completedSteps = JSON.parse(localStorage.getItem(getStorageKey(sessionType))) || [];
+        const delays = JSON.parse(localStorage.getItem(`delays_${sessionType}`)) || {};
+    
+        completedSteps.forEach(stepId => {
+            const stepElement = document.querySelector(`#step-${stepId}`);
+            if (stepElement) {
+                stepElement.classList.add('completed');
+            }
+        });
+    
+        Object.keys(delays).forEach(stepId => {
+            const delayElement = document.querySelector(`#delay-${stepId}`);
+            if (delayElement) {
+                delayElement.textContent = `Delay: ${delays[stepId]} min`;
+            }
+        });
+    
+        if (completedSteps.length > 0) {
+            statusMessage.textContent = `Last delivery completed at: ${completedSteps[completedSteps.length - 1]}`;
+        }
+    };
+    
+    // Load stored progress on page load
+    window.onload = () => {
+        loadTrackingProgress();
+        setInterval(() => {
+            const now = new Date();
+            if (now.getSeconds() === 0) {
+                resetTracking();
+            }
+        }, 1000); //  Checks every second, but reloads only once at 5:00 AM or 2:00 PM
+    };
+    
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("WebSocket Message Received:", data);
+    
+        const sessionType = getCurrentSession();
+        const currentStepId = data.area ? data.area.toLowerCase().replace(/\s+/g, '-').replace(/\./g, '') : null;
+        const delayElement = currentStepId ? document.querySelector(`#delay-${currentStepId}`) : null;
+    
+        let completedSteps = JSON.parse(localStorage.getItem(getStorageKey(sessionType))) || [];
+        let delays = JSON.parse(localStorage.getItem(`delays_${sessionType}`)) || {};
+    
+        if (data.action === "start" || data.action === "deliver") {
+            const stepElement = currentStepId ? document.querySelector(`#step-${currentStepId}`) : null;
+    
+            if (stepElement) {
+                if (data.action === "start") {
+                    console.log(`Start delivery from: ${data.area}`);
+                    stepElement.classList.add('active');
+                    statusMessage.textContent = `Delivery started from: ${data.area}`;
+                } else if (data.action === "deliver") {
+                    console.log(`Completed delivery at: ${data.area}`);
+    
+                    stepElement.classList.add('completed');
+                    statusMessage.textContent = `Delivery completed at: ${data.area}`;
+    
+                    if (!completedSteps.includes(currentStepId)) {
+                        completedSteps.push(currentStepId);
+                        localStorage.setItem(getStorageKey(sessionType), JSON.stringify(completedSteps));
+                    }
+    
+                    if (delayElement && data.delay !== undefined) {
+                        delays[currentStepId] = data.delay;
+                        delayElement.textContent = `Delay: ${data.delay} min`;
+                        localStorage.setItem(`delays_${sessionType}`, JSON.stringify(delays));
+                    }
+                }
+            }
+        } else {
+            console.log("Invalid WebSocket action received.");
+        }
+    };
+    
+</script>
+{% endblock scripts %}

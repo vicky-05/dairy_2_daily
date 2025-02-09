@@ -8,6 +8,7 @@
 
 {% endblock styles %}
 {% block content %}
+{% include 'inc/toast.html' %}
 <div class="container py-2">
     <h2 class="text-center mb-4 section-header text-uppercase">Your Cart</h2>
 
@@ -25,33 +26,34 @@
                             <div class="cart-item-details">
                                 <div class="cart-item-name">{{ item.name }}</div>
                                 <td> ₹{{ item.discounted_price|multiply:item.quantity|floatformat:2 }}</td>
-                                <div class="cart-item-quantity">Quantity: {{ item.quantity }}</div>
+                                <!-- Quantity Control -->
                             </div>
                             <a href="{% url 'remove_from_cart' slug %}" class="remove-btn text-danger text-decoration-none">
                                 <i class="fa-solid fa-trash me-2"></i>Remove
                             </a>
                         </div>
                         {% endfor %}
-                        <div class="cart-footer">
-                            <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
-                        </div>
+                        
 
                         <!-- Cart Total Section -->
                         <div class="cart-total mt-3">
                             <div class="text-muted">Total</div>
                             <div class="cart-item-price" id="total-price">₹{{ total_price|floatformat:2 }}</div>
                         </div>
+                        <div class="cart-footer">
+                            <a href="{% url 'product_collection' %}" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
+                        </div>
                     {% else %}
                     <div class="text-center">
                         <img src="{% static 'images/empty_cart_cow.png' %}" alt="Empty Cart" class="img-fluid" style="max-width: 300px;">
-                        <div class="text-center mt-4">
+                        <div class="text-center">
                             <p class="text-muted" style="font-size: 1.25rem; font-weight: 500; letter-spacing: 0.5px;">
                                 <i class="fa-solid fa-cart-arrow-down" style="font-size: 2rem; color: #6c757d;"></i>
                                 <br>
                                 Your cart is empty.
                             </p>
                             <div class="cart-footer">
-                                <a href="#" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
+                                <a href="{% url 'product_collection' %}" class="btn-continue"><i class="fa-solid fa-shopping-cart me-2"></i>Continue Shopping</a>
                             </div>
                             
                         </div>
@@ -107,7 +109,7 @@
 
 {% block scripts %}
 <script>
-    // Example: Assuming the cart is dynamically updated via JavaScript
+    
     // Parse the serialized cart JSON
     const cartItems = JSON.parse('{{ cart_json |safe }}');
     const deliveryFeeThreshold = 500;

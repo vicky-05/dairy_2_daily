@@ -11,9 +11,32 @@ class CustomUser(AbstractUser):
         SubscriptionPlan, on_delete=models.SET_NULL, null=True, blank=True, related_name="users",
         help_text="The subscription plan associated with the user"
     )
+    profile_picture = models.ImageField(
+        upload_to="profile_pics/",  # Saves files in 'media/profile_pics/'
+        null=True, 
+        blank=True, 
+        default="profile_pics/default_profile.png",  # Default image
+        help_text="User profile picture"
+    )
+
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
 
     def __str__(self):
         return self.username
+
+class SecurityQuestion(models.Model):
+    user = models.OneToOneField("CustomUser", on_delete=models.CASCADE)
+    question = models.CharField(max_length=255)
+    answer = models.CharField(max_length=255)
+
+    def check_answer(self, given_answer):
+        return self.answer.lower() == given_answer.lower()
+
+    def __str__(self):
+        return f"{self.user.username}'s Security Question"
+
+
+    
 
 class PincodeArea(models.Model):
     pincode = models.CharField(max_length=6)

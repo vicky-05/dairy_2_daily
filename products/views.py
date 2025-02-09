@@ -8,7 +8,7 @@ import json
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib import messages
-
+from django.db.models import Max
 
 
 
@@ -18,6 +18,12 @@ context={
 }
 # Create your views here.
 def home(request):
+
+    latest_reviews = Review.objects.filter(
+        id__in=Review.objects.values('user')
+        .annotate(latest_id=Max('id'))
+        .values('latest_id')
+    )[:10]  # Limit to 10 reviews
    
     featured_product = Product.objects.filter(is_featured=True).first()  # Fetch the first featured product
     
@@ -29,7 +35,8 @@ def home(request):
     user_subscription = request.user.subscription if request.user.is_authenticated else None
     context = {
         'featured_product': featured_product,
-        'user_subscription': user_subscription 
+        'user_subscription': user_subscription,
+        'reviews': latest_reviews 
     } 
     return render(request, 'products/home.html', context)
 
@@ -47,6 +54,12 @@ def fresh_milk(request):
 
 def journey_milk(request):
     return render(request, 'blog/journey_milk.html')
+
+
+def product_collection(request):
+    products = Product.objects.filter(is_featured=True)
+    context = {'products': products}
+    return render(request, 'products/product_collection.html', context)
 
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
@@ -130,6 +143,7 @@ def submit_review(request, slug):
             )
 
             return redirect('product_detail', slug=product.slug)
+    
 
 
 
@@ -167,6 +181,9 @@ def add_to_cart(request, slug):
     # Save the cart back to the session
     request.session['cart'] = cart
     
+     # Update cart item count in session
+    request.session['cart_items_count'] = sum(item['quantity'] for item in cart.values())
+
     # Display success message
     messages.success(request, f"Added {product.name} to cart successfully.")
     
@@ -200,15 +217,14 @@ def cart_page(request):
 
 
 def remove_from_cart(request, slug):
-    # Get the cart from the session
     cart = request.session.get('cart', {})
-    
-    # Check if the product is in the cart
+
     if slug in cart:
-        del cart[slug]  # Remove the product from the cart
-    
-    # Save the updated cart back to the session
-    request.session['cart'] = cart
-    
-    # Redirect back to the cart page
-    return redirect('cart_page')
+        del cart[slug]
+        request.session['cart'] = cart
+        request.session['cart_items_count'] = sum(item['quantity'] for item in cart.values())
+        messages.success(request, "Product removed from cart successfully.")
+    else:
+        messages.error(request, "Product not found in cart.")
+
+    return redirect('cart_page')  # Redirect ensures messages persist

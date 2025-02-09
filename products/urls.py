@@ -9,6 +9,7 @@ urlpatterns = [
     path('blog_organic_milk/', views.organic_milk, name='organic_milk'),
     path('blog_fresh_milk/', views.fresh_milk, name='fresh_milk'),
     path('blog_journey_milk/', views.journey_milk, name='journey_milk'),
+    path('product_collection/', views.product_collection, name='product_collection'),
     path('product_details/<slug:slug>/', views.product_detail, name='product_detail'),
     path("submit_review/<slug:slug>/", views.submit_review, name="submit_review"),
     path('add-to-cart/<slug:slug>/', views.add_to_cart, name='add_to_cart'),

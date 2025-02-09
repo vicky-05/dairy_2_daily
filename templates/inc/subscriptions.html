@@ -154,7 +154,6 @@
                         <button class="btn {% if plan.name == 'Basic' %}basic-btn{% elif plan.name == 'Standard' %}standard-btn{% else %}premium-btn{% endif %} mt-3 see-option" data-bs-toggle="collapse" {% if plan.name == 'Basic' %}data-bs-target="#detailsBasic"{% elif plan.name == 'Standard' %}data-bs-target="#detailsStandard"{% else %}data-bs-target="#detailsPremium"{% endif %} role="button" aria-expanded="false" aria-controls="detailsBasic">See Details</button>
                         <div class="collapse detailSection" {% if plan.name == 'Basic' %}id="detailsBasic"{% elif plan.name == 'Standard' %}id="detailsStandard"{% else %}id="detailsPremium"{% endif %} >
                             <ul class="list-unstyled mt-3">
-                                <li><i class="fas fa-pause-circle text-secondary"></i> Pause delivery for up to {{ plan.delivery_pause_limit }} days per month</li>
                                 <li><i class="fas fa-sync-alt text-secondary"></i> Any issue with milk or by-products will be replaced without delay</li>
                             </ul>
                         </div>

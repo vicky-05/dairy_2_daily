@@ -6,13 +6,33 @@ from authentication.models import CustomUser
 
 # Model for storing order details
 class Order(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="orders")  # Link order to user
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Shipping', 'Shipping'),
+        ('Completed', 'Completed'),
+        ('Canceled', 'Canceled'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # Use the default custom user model
+        on_delete=models.CASCADE,
+        related_name="orders"
+    )
     product_name = models.CharField(max_length=255)
     product_slug = models.SlugField()
-    amount = models.DecimalField(max_digits=10, decimal_places=2)  # For price
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=50, default='Pending')  # Example statuses: Pending, Completed, Canceled
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default='Pending'
+    )
+
+    class Meta:
+        ordering = ['-created_at']  # Orders are sorted by newest first
+        verbose_name = "Order"
+        verbose_name_plural = "Orders"
 
     def __str__(self):
         return f"Order #{self.id} - {self.product_name} ({self.user.username})"

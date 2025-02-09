@@ -33,9 +33,8 @@ ALLOWED_HOSTS = [ '192.168.41.205', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'jazzmin',
-    'channels',
-    'channels_redis',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -79,7 +78,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'dairy_to_daily.wsgi.application'
+# WSGI_APPLICATION = 'dairy_to_daily.wsgi.application'
 ASGI_APPLICATION = 'dairy_to_daily.asgi.application'
 
 CHANNEL_LAYERS = {

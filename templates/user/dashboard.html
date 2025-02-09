@@ -11,6 +11,114 @@
         border-radius: 5px;
         
     }
+    .confirm-cancel-btn:hover{
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+
+    }
+    .success-btn:hover{
+        background-color: green;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* Timeline Container */
+.timeline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+/* Step Style */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    margin-bottom: 30px; /* Space for drop lines */
+}
+
+/* Icon Container */
+.icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    color: #666;
+    transition: color 0.3s, transform 0.3s, background-color 0.3s;
+}
+
+.step-label {
+    margin-top: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Completed and Active Styles */
+.step.completed .icon-container {
+    background-color: #28a745;
+}
+
+.step.completed .step-icon {
+    color: #fff;
+}
+
+.step.active .icon-container {
+    background-color: #007bff;
+}
+
+.step.active .step-icon {
+    color: #fff;
+    transform: scale(1.3);
+}
+
+/* Line Styles */
+.line {
+    flex: 1;
+    height: 2px;
+    background-color: green;
+    position: relative;
+}
+
+.line.ship-line {
+    height: 4px;
+    background-color: #007bff;
+    position: relative;
+}
+.line.pend-line{
+    height: 4px;
+    background-color: #666;
+    position: relative;
+}
+.line.completed {
+    background-color: #28a745;
+}
+
+
+
+.line.drop-line.completed {
+    background-color: #28a745;
+}
+
+
+    
 </style>
 {% endblock styles %}
 
@@ -19,7 +127,7 @@
 <div class="container-fluid main-layout">
     <div class="row">
         <!-- Sidebar (Desktop and Tablet View) -->
-        <nav class="sidebar col-md-3 col-lg-2 sidebar p-3 d-none d-md-block" id="sidebar">
+        <nav class="sidebar col-md-3 col-lg-2 sidebar p-3 d-none d-md-block " id="sidebar">
             <h2 class="text-center fw-bold">Dashboard</h2>
             <ul class="nav flex-column mt-3">
                 <li class="nav-item"><a href="#" class="nav-link active">Overview</a></li>
@@ -43,7 +151,6 @@
                     <li class="nav-item"><a href="#" class="nav-link">My Plan</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Tracking</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Wallet</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">By-products</a></li>
                     <li class="nav-item"><a href="#" class="nav-link text-danger">Logout</a></li>
                 </ul>
             </div>
@@ -65,7 +172,7 @@
 
                 {% if subscription %}
                 <!-- Selected Plan Section -->
-                <div class="card mb-4 shadow-lg border-0">
+                <div class="card mb-4 shadow-lg border-0" data-aos="fade-up">
                     <div class="card-header text-center bg-dark text-white">
                         <h4 class="fw-bold">Your Plan</h4>
                     </div>
@@ -98,6 +205,7 @@
                                 <p >{{ subscription.start_date|date:"d-m-Y" }}</p>
                             </div>
                         </div>
+
                         <div class="d-flex align-items-center">
                             <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
                             <div>
@@ -116,123 +224,95 @@
                 {% endif %}
                 
             <!-- Wallet Section -->
-            <div class="card mb-4 shadow-lg border-0">
-            <div class="card-header text-center bg-dark ">
-                <h4 class="fw-bold text-white">Wallet</h4>
-            </div>
-            <div class="card-body text-center">
-                <p class="mb-3 fs-5">
-                    <i class="fa-solid fa-wallet fa-2x me-2 "></i>
-                    <strong>Current Balance:</strong> ₹250
-                </p>
-                <button class="btn btn-dark fw-bold add-money" data-bs-toggle="modal" data-bs-target="#addMoneyModal">
-                    <i class="fa-solid fa-plus me-2"></i>Add Money
-                </button>
-            </div>
-            </div>
-                <!-- Tracking Section -->
-{% if subscription %}
-<div class="card mb-4 shadow-lg border-0">
-    <div class="card-header text-center bg-dark text-white">
-        <h4 class="fw-bold">Delivery Tracking</h4>
-    </div>
-    <div class="card-body">
-        <!-- Morning Delivery -->
-        <div class="d-flex align-items-center mb-3">
-            <i class="fa-solid fa-sun fa-2x me-3"></i>
-            <div class="flex-grow-1">
-                <p class="mb-1"><strong>Morning Delivery:</strong></p>
-                <p>{{ delivery_status.morning.status|default:"Pending" }}</p>
-            </div>
-            {% if delivery_status.morning and delivery_status.morning.status == "Pending" %}
-            <button class="btn btn-outline-danger cancel-btn" onclick="cancelDelivery('morning')">Cancel</button>
-            {% endif %}
-        </div>
-
-        <!-- Evening Delivery -->
-        <div class="d-flex align-items-center mb-3">
-            <i class="fa-solid fa-moon fa-2x me-3"></i>
-            <div class="flex-grow-1">
-                <p class="mb-1"><strong>Evening Delivery:</strong></p>
-                <p>{{ delivery_status.evening.status|default:"Pending" }}</p>
-            </div>
-            {% if delivery_status.evening and delivery_status.evening.status == "Pending" %}
-            <button class="btn btn-outline-danger cancel-btn" onclick="cancelDelivery('evening')">Cancel</button>
-            {% endif %}
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Order Tracking Section -->
-<div class="card mb-4 shadow-lg border-0">
-    <div class="card-header text-center bg-dark text-white">
-        <h4 class="fw-bold">Order Tracking</h4>
-    </div>
-    <div class="card-body">
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <p class="mb-1"><strong>Order ID:</strong> </p>
-                    <p class="mb-1"><strong>Product:</strong> </p>
-                    <p><strong>Status:</strong> </p>
+            <div class="card mb-4 shadow-lg border-0" data-aos="fade-up">
+                <div class="card-header text-center bg-dark">
+                    <h4 class="fw-bold text-white">Wallet</h4>
                 </div>
-                <button class="btn btn-outline-danger cancel-btn" >Cancel</button>
-            </li>
-        </ul>
-    </div>
-</div>
+                <div class="card-body text-center">
+                    <p class="mb-3 fs-5">
+                        <i class="fa-solid fa-wallet fa-2x me-2"></i>
+                        <strong>Current Balance:</strong>
+                        <span class="wallet-balance">{{ user.balance }}</span>
+                    </p>
+                
+                </div>
+            </div>
+            
+               <!-- Tracking Section -->
+               {% if subscription %}
+                    <div class="card mb-4 shadow-lg border-0" data-aos="fade-up">
+                        <div class="card-header text-center bg-dark text-white">
+                            <h4 class="fw-bold">Delivery Tracking</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <a href="{% url 'subscription_track' %}" class="btn track-btn btn fw-bold" data-aos="fade-up"> Track Delivery</a>
+                        </div>
+                    </div>
+                {% endif %}
+
+               
 
 
-
-
-
-                    <!-- Add Money Modal -->
-                    <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-dark text-white" style="border-radius: 10px;">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addMoneyModalLabel">
-                                    <i class="fa-solid fa-wallet me-2"></i>Add Money to Wallet
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Card Number Input -->
-                                <div class="mb-4">
-                                    <label for="cardNumber" class="form-label text-uppercase fw-bold">Card Number</label>
-                                    <div class="input-group">
-                                        <!-- Masked part of the card number -->
-                                        <span class="input-group-text bg-secondary text-white border-light" style="border-radius: 5px 0 0 5px;">
-                                            **** **** ****
-                                        </span>
-                                        <!-- Last 4 digits input -->
-                                        <input type="text" class="form-control bg-dark text-white border-light" 
-                                            id="cardNumber" placeholder="1234" maxlength="4" required
-                                            style="border-radius: 0 5px 5px 0; text-align: center; font-size: 1.2rem;">
+                    <!-- Order Tracking Section -->
+                    <div class="card mb-4 shadow-lg border-0" data-aos="fade-up">
+                        <div class="card-header text-center bg-dark text-white">
+                            <h4 class="fw-bold">Order Tracking</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-1"><strong>Order ID:</strong> </p>
+                                        <p class="mb-1"><strong>Product:</strong> </p>
+                                        <p><strong>Status:</strong> </p>
                                     </div>
-                                </div>
+                                    <button class="btn btn-outline-danger cancel-btn" >Cancel</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
-                                <!-- PIN Input -->
-                                <div class="mb-4">
-                                    <label for="pinNumber" class="form-label text-uppercase fw-bold">Enter PIN</label>
-                                    <input type="password" class="form-control bg-dark text-white border-light" 
-                                        id="pinNumber" placeholder="••••" maxlength="4" required
-                                        style="text-align: center; font-size: 1.2rem; letter-spacing: 3px;">
-                                </div>
 
-                                <!-- Add Money Button -->
-                                <div class="text-center">
-                                    <button class="btn btn px-4 py-2 fw-bold">Add Money</button>
+
+
+
+                    <!-- Confirmation Modal -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-light">Confirm</button>
+                                <div class="modal-body">
+                                    Are you sure you want to cancel this order?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <button type="button" class="btn btn-danger confirm-cancel-btn">Yes, Cancel</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Success Modal -->
+                    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Order canceled successfully.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success success-btn" data-bs-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
               
                 
                 
@@ -246,6 +326,7 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Fetch user orders
         fetch('/authentication/get-user-orders/', {
             method: 'GET',
             headers: {
@@ -254,98 +335,142 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
-                const orderList = document.querySelector('.list-group');
-                orderList.innerHTML = ''; // Clear any placeholder text
+            const orderList = document.querySelector('.list-group');
+            orderList.innerHTML = ''; // Clear the previous list of orders
     
-                if (data.orders.length > 0) {
-                    data.orders.forEach(order => {
-                        const orderItem = `
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <p class="mb-1"><strong>Order ID:</strong> ${order.id}</p>
-                                    <p class="mb-1"><strong>Product:</strong> ${order.product_name}</p>
-                                    <p><strong>Status:</strong> <span class="order-status">${order.status}</span></p>
-                                </div>
-                                ${order.status === 'Pending' ? `
+            if (data.success && data.orders.length > 0) {
+                data.orders.forEach(order => {
+                    let statusIcon;
+                    switch (order.status.toLowerCase()) {
+                        case 'pending':
+                            statusIcon = '<i class="bi bi-hourglass-split text-warning"></i>'; // Bootstrap hourglass icon
+                            break;
+                        case 'shipping':
+                            statusIcon = '<i class="bi bi-truck text-primary"></i>'; // Bootstrap truck icon
+                            break;
+                        case 'completed':
+                            statusIcon = '<i class="bi bi-check-circle text-success"></i>'; // Bootstrap check icon
+                            break;
+                        case 'canceled':
+                            statusIcon = '<i class="bi bi-x-circle text-danger"></i>'; // Bootstrap cancel icon
+                            break;
+                        default:
+                            statusIcon = '<i class="bi bi-info-circle text-muted"></i>'; // Default info icon
+                    }
+                    const orderItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center order-item" data-order-id="${order.id}">
+                            <div>
+                                <p class="mb-1"><strong>Order ID:</strong> ${order.id}</p>
+                                <p class="mb-1"><strong>Product:</strong> ${order.product_name}</p>
+                                 <p><strong>Status:</strong> <span class="order-status">${statusIcon} ${order.status}</span></p>
+                            </div>
+                            ${order.status === 'Pending' ? `
                                 <button class="btn btn-outline-danger cancel-btn" data-order-id="${order.id}">
                                     Cancel
-                                </button>` : ''}
-                                
-                            </li>
-                        `;
-                        orderList.insertAdjacentHTML('beforeend', orderItem);
-                    });
-                } else {
-                    orderList.innerHTML = '<p class="text-center text-muted">You have no recent orders to track.</p>';
-                }
+                                </button>` : ''
+                            }
+                        </li>
+                    `;
+                    orderList.insertAdjacentHTML('beforeend', orderItem);
+    
+                    // Open WebSocket connection for each order
+                    const socket = new WebSocket('ws://' + window.location.host + `/ws/orders/${order.id}/`);
+    
+                    // WebSocket event listeners
+                    socket.onopen = function(event) {
+                        console.log(`WebSocket connection established for order ${order.id}`);
+                    };
+    
+                    socket.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        const orderId = data.order_id;
+                        const status = data.status;
+    
+                        // Find the corresponding order and update its status
+                        const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
+                        if (orderItem) {
+                            const statusElement = orderItem.querySelector('.order-status');
+                            statusElement.textContent = ` ${status}`;
+    
+                            // Hide the cancel button if the status changes to anything other than 'Pending'
+                            const cancelButton = orderItem.querySelector('.cancel-btn');
+                            if (cancelButton && status !== 'Pending') {
+                                cancelButton.remove();
+                            }
+                        }
+                    };
+    
+                    socket.onclose = function(event) {
+                        console.log(`WebSocket connection closed for order ${order.id}`);
+                    };
+    
+                    socket.onerror = function(error) {
+                        console.error(`WebSocket Error for order ${order.id}:`, error);
+                    };
+                });
             } else {
-                alert(data.message || 'Failed to load orders.');
+                orderList.innerHTML = '<p class="text-center text-muted">You have no recent orders to track.</p>';
             }
         })
         .catch(error => console.error('Error fetching orders:', error));
+    
+        // Cancel order logic
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('cancel-btn')) {
+                const orderId = event.target.dataset.orderId;
+        
+                // Show confirmation modal
+                const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                confirmationModal.show();
+        
+                // Handle confirmation button click
+                document.querySelector('.confirm-cancel-btn').onclick = () => {
+                    fetch(`/authentication/cancel-order/${orderId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            confirmationModal.hide();
+        
+                            if (data.success) {
+                                // Show success modal
+                                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                                successModal.show();
+
+                                // Update the order status
+                                const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
+                                const statusElement = orderItem.querySelector('.order-status');
+                                statusElement.textContent = 'Canceled';
+        
+                                // Remove the cancel button
+                                const cancelButton = orderItem.querySelector('.cancel-btn');
+                                cancelButton.remove();
+        
+                                
+                                
+        
+                                // Optionally, update the wallet balance dynamically
+                                if (data.wallet_balance) {
+                                    document.querySelector('.wallet-balance').textContent = data.wallet_balance;
+                                    
+                                }
+                                
+                            } else {
+                                alert(data.message || 'Failed to cancel order.');
+                            }
+                        })
+                        .catch(error => console.error('Error canceling order:', error));
+                };
+            }
+        });
+        
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Open WebSocket connection
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/orders/');
-    
-        // Handle WebSocket connection open event
-        socket.onopen = function(event) {
-            console.log("WebSocket connection established.");
-        };
-    
-        // Handle WebSocket message event (order status updates)
-        socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            const orderId = data.order_id;
-            const status = data.status;
-    
-            // Find the order in the list and update its status
-            const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
-            if (orderItem) {
-                const statusElement = orderItem.querySelector('.order-status');
-                statusElement.textContent = `Status: ${status}`;
-            }
-        };
-    
-        // Handle WebSocket close event
-        socket.onclose = function(event) {
-            console.log("WebSocket connection closed.");
-        };
-    
-        // Handle WebSocket error event
-        socket.onerror = function(error) {
-            console.error("WebSocket Error: ", error);
-        };
-    });
-    
-
-    document.addEventListener('click', (event) => {
-        if (event.target.classList.contains('cancel-btn')) {
-            const orderId = event.target.dataset.orderId;
-    
-            if (confirm('Are you sure you want to cancel this order?')) {
-                fetch(`/authentication/cancel-order/${orderId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Order canceled successfully.');
-                        location.reload(); // Reload to update the order list
-                    } else {
-                        alert(data.message || 'Failed to cancel order.');
-                    }
-                })
-                .catch(error => console.error('Error canceling order:', error));
-            }
-        }
-    });
-    
+       
 </script>
+    
 {% endblock scripts %}

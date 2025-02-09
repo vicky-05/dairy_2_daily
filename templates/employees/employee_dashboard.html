@@ -26,35 +26,36 @@
 </style>
 {% endblock styles %}
 {% block content %}
-<!-- Dashboard Header -->
 <div class="dashboard-header text-center">
     <h1>Employee Dashboard</h1>
     <p>Welcome, {{ employee.name }}</p>
 </div>
 
-<!-- Dashboard Content -->
 <div class="container mt-4 mb-4">
     <div class="row">
-        <!-- Order Management -->
-        <div class="col-md-6">
-            <div class="card p-3 mb-4">
-                <h4 class="card-title">Manage Product Orders</h4>
-                <p>Deliver the product orders.</p>
-                <a href="{% url 'manage_product_orders' %}" class="btn btn-primary w-100">Manage Orders</a>
-            </div>
-        </div>
 
-        <!-- Subscription Management -->
-        <div class="col-md-6">
-            <div class="card p-3 mb-4">
-                <h4 class="card-title">Manage Subscriptions</h4>
-                <p>Deliver the subscription orders.</p>
-                <a href="#" class="btn btn-primary w-100">Manage Subscriptions</a>
+        {% if manage_order_type == 'Product' or manage_order_type == 'Both' %}
+            <!-- Product Orders -->
+            <div class="col-md-6">
+                <div class="card p-3 mb-4">
+                    <h4 class="card-title">Manage Product Orders</h4>
+                    <p>Deliver the product orders.</p>
+                    <a href="{% url 'manage_product_orders' %}" class="btn btn-primary w-100">Manage Orders</a>
+                </div>
             </div>
-        </div>
+        {% endif %}
+        {% if manage_order_type == 'Subscription' or manage_order_type == 'Both' %}
+            <!-- Subscription Orders -->
+            <div class="col-md-6">
+                <div class="card p-3 mb-4">
+                    <h4 class="card-title">Manage Subscriptions</h4>
+                    <p>Deliver the subscription orders.</p>
+                    <a href="{% url 'subscription_orders' %}" class="btn btn-primary w-100">Manage Subscriptions</a>
+                </div>
+            </div>
+        {% endif %}
     </div>
 
-    <!-- Logout -->
     <div class="text-center mt-4">
         <form method="POST" action="{% url 'employee_logout' %}">
             {% csrf_token %}
