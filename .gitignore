@@ -7,15 +7,7 @@ __pycache__/
 venv/
 env/
 
-# Django specific
-db.sqlite3
-*.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-*.sqlite3
-*.sqlite
+
 
 # Media and Static files
 /staticfiles/
