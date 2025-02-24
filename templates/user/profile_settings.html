@@ -60,6 +60,9 @@
     .form-control {
         border-radius: 5px;
     }
+    label.form-label {
+        display: flex;
+    }
 </style>
 {% endblock styles %}
 
@@ -90,6 +93,7 @@
                 <label class="form-label">Email</label>
                 {{ form.email }}
             </div>
+            
             <button type="submit" class="btn btn-dark w-100">Save Changes</button>
         </form>
     </div>

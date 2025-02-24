@@ -1,0 +1,92 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Terms & Conditions | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+    .terms-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .terms-container h2 {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .terms-container h4 {
+        font-weight: bold;
+        margin-top: 30px;
+    }
+    .terms-content {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .terms-image {
+        display: block;
+        max-width: 100%;
+        width: 500px;
+        margin: 30px auto;
+    }
+    .footers {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+
+<div class="terms-container" data-aos="fade-up">
+    <h2>Terms & Conditions</h2>
+
+    <!-- General Terms -->
+    <h4 data-aos="fade-right">1. General Terms</h4>
+    <p class="terms-content">
+        Dairy to Daily provides fresh dairy products directly from farms, ensuring high quality and hygiene. Our products are perishable, and we follow strict safety standards.
+    </p>
+
+    <!-- Order & Delivery -->
+    <h4 data-aos="fade-right">2. Order & Delivery</h4>
+    <p class="terms-content">
+        Orders must be placed through our official channels. Deliveries occur twice daily within a 50 km radius. Customers must provide accurate address details for successful delivery.
+    </p>
+
+    <!-- Image in Between Content -->
+    <img src="{% static 'images/T&C.png' %}" alt="Dairy to Daily Delivery" class="terms-image" data-aos="zoom-in">
+    
+    <!-- Payment & Pricing -->
+    <h4 data-aos="fade-right">3. Payment & Pricing</h4>
+    <p class="terms-content">
+        Prices are subject to change. Payments must be made online or via approved methods. Cash on Delivery may be available in selected areas.
+    </p>
+
+    <!-- Returns & Refunds -->
+    <h4 data-aos="fade-right">4. Returns & Refunds</h4>
+    <p class="terms-content">
+        Due to the perishable nature of our products, returns are not accepted. If the product is damaged, customers must report it within 2 hours with proof.
+    </p>
+
+    <!-- Subscription Plans -->
+    <h4 data-aos="fade-right">5. Subscription Plans</h4>
+    <p class="terms-content">
+        Subscription services allow daily dairy deliveries. Customers can modify plans with 24-hour notice before the next delivery.
+    </p>
+
+    <!-- Privacy Policy -->
+    <h4 data-aos="fade-right">6. Privacy Policy</h4>
+    <p class="terms-content">
+        Customer data is confidential and used only for order processing. We do not share information with third parties without consent.
+    </p>
+
+    <!-- Footer -->
+    <div class="footers">
+        <p>For any queries, contact us at <strong>support@dairytodaily.com</strong></p>
+    </div>
+</div>
+
+{% endblock content %}

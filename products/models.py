@@ -14,7 +14,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)  # Slug field
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    is_in_stock = models.BooleanField(default=True)
+    quantity = models.PositiveIntegerField(default=0)  # Add this field to track stock
     image = models.ImageField(upload_to="products/images/", default="products/default.jpg")
     product_video = models.FileField(upload_to="products/videos/", blank=True, null=True)  # Allow video file upload
     unit_name = models.CharField(max_length=50, blank=True, null=True)  # E.g., "500ml", "1kg"

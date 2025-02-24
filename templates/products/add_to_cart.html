@@ -4,7 +4,40 @@
 {% block title %} Add to Cart | Dairy to Daily {% endblock title %} 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/add_to_cart.css' %}">
+<style>
+    .quantity-control button {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-control .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+    
+    .quantity-control .btn-outline-primary:hover {
+        background-color: black;
+        color: #fff;
+    }
 
+    .remove-btn{
+        border: 1px solid red;
+        color: red;
+    }
+
+    .remove-btn:hover{
+        background-color: red;
+        color: #fff !important;
+
+    }
+    
+</style>
 
 {% endblock styles %}
 {% block content %}
@@ -24,11 +57,16 @@
                         <div class="cart-item" data-aos="fade-up">
                             <img src="{{ item.image }}" alt="{{ item.name }}">
                             <div class="cart-item-details">
-                                <div class="cart-item-name">{{ item.name }}</div>
-                                <td> ₹{{ item.discounted_price|multiply:item.quantity|floatformat:2 }}</td>
-                                <!-- Quantity Control -->
+                                <div class="cart-item-name">{{ item.name }}
+                                    <div class="quantity-control d-flex align-items-center">
+                                        <button class="btn btn-sm btn-outline-secondary rounded-circle fw-bold px-3 me-2" onclick="updateQuantity('{{ slug }}', -1)">−</button>
+                                        <span id="quantity-{{ slug }}" class="fw-bold fs-5">{{ item.quantity }}</span>
+                                        <button class="btn btn-sm btn-outline-dark rounded-circle fw-bold px-3 ms-2" onclick="updateQuantity('{{ slug }}', 1)">+</button>
+                                    </div>                                    
+                                    <div class="cart-item-price"> ₹<span id="price-{{ slug }}">{{ item.discounted_price|multiply:item.quantity|floatformat:2 }}</span></div>
+                                </div>
                             </div>
-                            <a href="{% url 'remove_from_cart' slug %}" class="remove-btn text-danger text-decoration-none">
+                            <a href="{% url 'remove_from_cart' slug %}" class="remove-btn  text-danger text-decoration-none">
                                 <i class="fa-solid fa-trash me-2"></i>Remove
                             </a>
                         </div>
@@ -79,23 +117,20 @@
                     </div>
 
                     
-                    <!-- Delivery Fee Section -->
+
                     <div class="cart-delivery">
                         <div class="text-muted">Delivery Fee</div>
                         <div class="cart-item-price" id="delivery-fee">
-                            ₹{{ delivery_fee }}
+                            ₹0.00
                         </div>
                     </div>
+
 
                     <!-- Final Total after discount and delivery fee -->
                     <div class="cart-total">
                         <div class="text-muted">Final Total</div>
                         <div class="cart-item-price" id="final-total">₹{{ final_total }}</div>
                     </div>
-
-                    <button class="checkout-btn" data-bs-toggle="modal" data-bs-target="#checkoutModal" data-aos="fade-up">
-                        Proceed to Checkout
-                    </button>
                 </div>
             </div>
 
@@ -104,31 +139,109 @@
 
     </div>
 </div>
+<div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;"></div>
 
 {% endblock content %}
 
 {% block scripts %}
 <script>
-    
-    // Parse the serialized cart JSON
-    const cartItems = JSON.parse('{{ cart_json |safe }}');
+
+
+    // Parse the serialized cart JSON safely
+    const cartItems = JSON.parse('{{ cart_json |safe }}') || {};
     const deliveryFeeThreshold = 500;
     const deliveryFeeValue = 20;
+    const maxQuantity = 5;
 
-    function updateCartSummary() {
+    function updateQuantity(slug, change) {
+        if (!cartItems[slug]) return;
+    
+        let newQuantity = cartItems[slug].quantity + change;
+    
+         // Prevent quantity from going below 1
+        if (newQuantity < 1) {
+            showToast("Minimum quantity is 1!", "error");
+            return;
+        }
+        // Fetch product stock from the database before updating the cart
+        fetch(`/check-stock/${slug}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast("Product not found!", "error");
+                    return;
+                }
+    
+                const availableStock = data.available_quantity;
+    
+                // Check if the requested quantity exceeds the stock
+                if (newQuantity > availableStock) {
+                    showToast(`Only ${availableStock} items available in stock!`, "error");
+                    return;
+                }
+    
+                // Show an error message if the user tries to exceed the max limit (5)
+                if (newQuantity > maxQuantity) {
+                    showToast("You can only add up to 5 items per product!", "error");
+                    return;
+                }
+    
+                // Send AJAX request to update cart in session
+                fetch("{% url 'update_cart_quantity' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ slug, action: change > 0 ? "increase" : "decrease" }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showToast(data.error, "error"); // Show error message if needed
+                    } else {
+                        cartItems[slug].quantity = data.quantity;
+    
+                        // Update the displayed quantity
+                        document.getElementById(`quantity-${slug}`).textContent = data.quantity;
+    
+                        // Update the individual item price
+                        const newItemPrice = data.quantity * cartItems[slug].price;
+                        document.getElementById(`price-${slug}`).textContent = newItemPrice.toFixed(2);
+    
+                        // Update the checkout section
+                        updateCartSummary(data);
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            })
+            .catch(error => console.error("Error fetching stock:", error));
+        
+    }
+    
+
+    function updateCartSummary(data = null) {
         let totalQuantity = 0;
         let totalPrice = 0;
+        let deliveryFee = 0;
+        let finalTotal = 0;
 
-        // Calculate totals
-        for (const slug in cartItems) {
-            const item = cartItems[slug];
-            totalQuantity += item.quantity;
-            totalPrice += item.quantity * item.price;
+        if (data) {
+            // Use updated values from the response
+            totalQuantity = data.total_quantity;
+            totalPrice = data.total_price;
+            deliveryFee = data.delivery_fee;
+            finalTotal = data.final_total;
+        } else {
+            // Calculate totals manually if no data provided
+            for (const slug in cartItems) {
+                const item = cartItems[slug];
+                totalQuantity += item.quantity;
+                totalPrice += item.quantity * item.price;
+            }
+            deliveryFee = totalPrice > 0 && totalPrice < deliveryFeeThreshold ? deliveryFeeValue : 0;
+            finalTotal = totalPrice + deliveryFee;
         }
-
-        // Calculate delivery fee and final total
-        const deliveryFee = totalPrice < deliveryFeeThreshold ? deliveryFeeValue : 0;
-        const finalTotal = totalPrice + deliveryFee;
 
         // Update the DOM
         document.getElementById('item-count').textContent = totalQuantity;
@@ -136,8 +249,33 @@
         document.getElementById('final-total').textContent = `₹${finalTotal}`;
     }
 
+    
+
+    // Function to show a Bootstrap toast message
+    function showToast(message, type) {
+        let toastHTML = `
+            <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+
+        // Append the toast to the toast container
+        let toastContainer = document.getElementById("toast-container");
+        toastContainer.innerHTML = toastHTML;
+        
+        // Show the toast
+        let toastEl = new bootstrap.Toast(toastContainer.querySelector(".toast"));
+        toastEl.show();
+    }
+
     // Call the function to initialize
     updateCartSummary();
+
+
 </script>
+
 
 {% endblock scripts %}

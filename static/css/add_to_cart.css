@@ -51,7 +51,6 @@
         .remove-btn {
             color: #000;  /* Black color for remove button */
             background: none;
-            border: none;
             font-size: 1.1rem;
             cursor: pointer;
             transition: color 0.3s;

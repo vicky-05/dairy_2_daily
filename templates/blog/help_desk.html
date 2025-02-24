@@ -1,0 +1,135 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Help | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+
+    .help-container {
+        max-width: 900px;
+        margin: 50px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .help-container h2 {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .help-container h4 {
+        font-weight: bold;
+        margin-top: 30px;
+    }
+    .help-content {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .help-image {
+        display: block;
+        max-width: 100%;
+        width: 500px;
+        margin: 30px auto;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .footers {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+        color: #555;
+    }
+    .contact-btn {
+        display: block;
+        width: 200px;
+        margin: 20px auto;
+        padding: 10px;
+        text-align: center;
+        background-color: black;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .contact-btn:hover {
+        background-color: #444;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+
+<div class="help-container" data-aos="fade-up">
+    <h2>Help & Support</h2>
+
+    <!-- How to Use DToD Chatbot -->
+    <h4 data-aos="fade-right">1. How to Use the DToD Chatbot</h4>
+    <p class="help-content">
+        The Dairy to Daily chatbot is your personal assistant for quick help. Simply type your query in the chatbox, and the bot will provide instant answers regarding orders, subscriptions, and payments.
+    </p>
+
+    <!-- Image -->
+    <img src="{% static 'images/chatbot2.png' %}" alt="DToD Chatbot Help" class="help-image" data-aos="zoom-in">
+
+    <!-- How to Make Subscriptions & Payments -->
+    <h4 data-aos="fade-right">2. How to Make Subscriptions & Payments</h4>
+    <p class="help-content">
+        To subscribe, visit the 'Subscription Plans' section and choose your preferred plan. Payments can be made via UPI, credit/debit card, or wallet.
+    </p>
+
+    <!-- Image -->
+    <img src="{% static 'images/subscriptions_Pay.JPG' %}" alt="Subscription Payment" class="help-image" data-aos="zoom-in">
+
+    
+
+    <!-- How to Change Profile Image -->
+    <h4 data-aos="fade-right">4. How to Change Your Profile Image</h4>
+    <p class="help-content">
+        Go to 'My Profile,' click on the profile picture, and upload a new image. Supported formats: JPG, PNG.
+    </p>
+
+    <!-- Image -->
+    <img src="{% static 'images/profile.JPG' %}" alt="Profile Change" class="help-image" data-aos="zoom-in">
+
+    <!-- How to Track Orders -->
+    <h4 data-aos="fade-right">5. How to Track Your Order</h4>
+    <p class="help-content">
+        You can track your order by visiting the 'My Orders' section and clicking on 'Track Order.'
+    </p>
+
+    <!-- Image -->
+    <img src="{% static 'images/order.JPG' %}" alt="Order Tracking" class="help-image" data-aos="zoom-in">
+
+    <!-- Delivery Timings & Areas -->
+    <h4 data-aos="fade-right">6. Delivery Timings & Areas</h4>
+    <p class="help-content">
+         Deliveries are made twice daily: Morning (6 AM - 9 AM) & Evening (5 PM - 8 PM).  
+         We deliver within a 50 km radius of the city.
+    </p>
+
+    <!-- Refund & Cancellation Policy -->
+    <h4 data-aos="fade-right">7. Refund & Cancellation Policy</h4>
+    <p class="help-content">
+        If your order is incorrect or damaged, request a refund within 24 hours.  
+         Cancellations must be made before the cut-off time (10 PM for next-day delivery).
+    </p>
+
+    <!-- How to Contact Customer Support -->
+    <h4 data-aos="fade-right">8. How to Contact Customer Support</h4>
+    <p class="help-content">
+        Need help? Our support team is available from 8 AM - 10 PM.  
+         Email: <strong>support@dairytodaily.com</strong>  
+         Phone: <strong>+91 98765 43210</strong>
+    </p>
+
+    <!-- Contact Button -->
+    <a href="mailto:support@dairytodaily.com" class="contact-btn" data-aos="zoom-in">Contact Support</a>
+
+    <!-- Footer -->
+    <div class="footers">
+        <p>&copy; 2025 Dairy to Daily. All rights reserved.</p>
+    </div>
+</div>
+
+{% endblock content %}

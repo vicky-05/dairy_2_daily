@@ -1,113 +1,172 @@
 {% load static %}
+<style>
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
+        border: 1px solid #ddd;
+        max-height: 300px;
+        overflow-y: auto;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        border-radius: 5px;
+    }
+    
+    .search-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        transition: background 0.3s;
+    }
+    
+    .search-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .search-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+        width: 100%;
+    }
+    
+    .search-img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 5px;
+    }
+    
+    .no-result {
+        padding: 10px;
+        text-align: center;
+        color: #777;
+    }
+    
+    @media (max-width: 768px) {
+        .search-results {
+            width: 100%;
+        }
+    }
+    
+</style>
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg  shadow-sm " >
+<nav class="navbar navbar-expand-lg shadow-sm">
     <div class="container">
         <!-- Logo -->
-         <a class="navbar-brand" href="{% url 'home' %}">
-        <img src="{% static 'images/Dairy_To_Daily_logo.png' %}" alt="Dairy to Daily Logo" class="logo" >
+        <a class="navbar-brand" href="{% url 'home' %}">
+            <img src="{% static 'images/Dairy_To_Daily_logo.png' %}" alt="Dairy to Daily Logo" class="logo">
         </a>
-        
-        <!-- Toggler for Mobile View -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        
-        <!-- Navbar Links and Buttons -->
+
+        <!-- Navbar Links & Actions -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <!-- Centered Links -->
-            <ul class="navbar-nav mx-auto">
+            <ul class="navbar-nav mx-auto text-center"> <!-- Centered & aligned text -->
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url 'home' %}" style="animation: fadeInSlide 1s;">Home</a>
+                    <a class="nav-link active" href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'about' %}" style="animation: fadeInSlide 1.2s;">About</a>
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'product_collection' %}" id="byProductDropdown" role="button" aria-expanded="false">Product</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="byProductDropdown" role="button"
+                        aria-expanded="false">Product</a>
                     <ul class="dropdown-menu border-0 shadow">
                         {% for product in products %}
                         <li class="dropdown-item d-flex align-items-center">
-                            <a href="{% url 'product_detail' product.slug %}" class=" nav-link me-2">{{ product.name }}</a>
+                            <a href="{% url 'product_detail' product.slug %}" class="nav-link me-2">{{ product.name }}</a>
                             <img src="{{ product.image.url }}" alt="Curd" class="preview-img">
                         </li>
                         {% endfor %}
-                        
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'blog' %}" id="byBlogDropdown" role="button" aria-expanded="false">Blog</a>
+                    <a class="nav-link dropdown-toggle" href="#" id="byBlogDropdown" role="button"
+                        aria-expanded="false">Blog</a>
                     <ul class="dropdown-menu border-0 shadow">
                         <li class="dropdown-item d-flex align-items-center">
-                            <a href="{% url 'organic_milk' %}" class=" nav-link me-2">Benefits of Organic Milk</a>
+                            <a href="{% url 'organic_milk' %}" class="nav-link me-2">Benefits of Organic Milk</a>
                             <img src="/static/images/benefits-of-milk.jpg" alt="Curd" class="preview-img">
                         </li>
                         <li class="dropdown-item d-flex align-items-center">
-                            <a href="{% url 'journey_milk' %}" class=" nav-link me-2">The Journey of Milk</a>
+                            <a href="{% url 'journey_milk' %}" class="nav-link me-2">The Journey of Milk</a>
                             <img src="/static/images/dairy-cows.jpg" alt="Cheese" class="preview-img">
                         </li>
                         <li class="dropdown-item d-flex align-items-center">
-                            <a href="{% url 'fresh_milk' %}" class=" nav-link me-2">Why Fresh Milk is Best</a>
+                            <a href="{% url 'fresh_milk' %}" class="nav-link me-2">Why Fresh Milk is Best</a>
                             <img src="/static/images/organic-milk-Organic-Boosting1.jpg" alt="Butter" class="preview-img">
                         </li>
                     </ul>
                 </li>
             </ul>
-        
-            <!-- Sign Up and Login Buttons -->
-            <div class="d-flex flex-column flex-lg-row">
-                <form class="d-flex d-none d-lg-flex me-lg-2" style="animation: dropIn 1.2s;">
+
+            <!-- Mobile View: Centered Auth Buttons -->
+            <div class="d-flex flex-column flex-lg-row text-center">
+                <!-- Search Bar (Hidden on Mobile) -->
+                <form class="d-flex d-none d-lg-flex me-lg-2 position-relative">
                     <input class="form-control search-input" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-dark ms-2" type="submit" style="animation: pulse 2s infinite;">Search</button>
                 </form>
+
                 {% if user.is_authenticated %}
-                    <!-- Authenticated User Section -->
-                    <div class="d-flex align-items-center">
-                        <ul class="navbar-nav mx-auto">
-                                <!-- Authenticated User Section -->
-                                <li class="nav-item dropdown user-dropdown">
-                                    <a class="nav-link dropdown-toggle btn btn-dark d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle" width="40" height="40">
-                                    </a>
-                                    <ul class="dropdown-menu border-0 shadow">
-                                        <li class="dropdown-item d-flex align-items-center">
-                                            <a href="{% url 'profile_settings' %}" class="nav-link me-2"><i class="bi bi-gear me-2"></i>{{ user.username }}</a>
-                                        </li>
-                                        <li class="dropdown-item d-flex align-items-center">
-                                            <a href="{% url 'dashboard' %}" class="nav-link me-2"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-                                        </li>
-                                        <li class="dropdown-item d-flex align-items-center">
-                                            <a href="{% url 'logout' %}" class="nav-link text-danger me-2"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                        </ul>
-                        <!-- Cart Button with Item Count Badge -->
-                        <a href="{% url 'cart_page' %}" class="btn btn-dark d-flex align-items-center me-3 position-relative cart-btn" style="animation: fadeIn 1.2s;">
-                            <i class="bi bi-cart-fill fs-4 cart-icon"></i>
-                            {% if request.session.cart_items_count and request.session.cart_items_count > 0 %}
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
-                                {{ request.session.cart_items_count }}
-                            </span>
-                            {% else %}
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.75rem;">
-                                0
-                            </span>
-                            {% endif %}
+                <!-- Authenticated User Section -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item dropdown user-dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-dark d-flex align-items-center mx-auto" href="#" id="userDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle"
+                                width="40" height="40">
                         </a>
-                        
-                    </div>
+                        <ul class="dropdown-menu border-0 shadow text-center">
+                            <li class="dropdown-item d-flex align-items-center">
+                                <a href="{% url 'profile_settings' %}" class="nav-link me-2">
+                                    <i class="bi bi-gear me-2"></i>{{ user.username }}
+                                </a>
+                            </li>
+                            <li class="dropdown-item d-flex align-items-center">
+                                <a href="{% url 'dashboard' %}" class="nav-link me-2">
+                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="dropdown-item d-flex align-items-center">
+                                <a href="{% url 'logout' %}" class="nav-link text-danger me-2">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Cart Button -->
+                <a href="{% url 'cart_page' %}" class="btn btn-dark d-flex align-items-center  mx-3 position-relative cart-btn">
+                    <i class="bi bi-cart-fill fs-4 cart-icon"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.75rem;">
+                        {{ request.session.cart_items_count|default:0 }}
+                    </span>
+                </a>
+
                 {% else %}
-                <a href="{% url 'register' %}" class="btn btn-dark me-lg-2 mx-lg-2" style="animation: growIn 1s;">Sign Up</a>
-                <a href="{% url 'login' %}" class="btn btn-outline-dark" style="animation: growIn 1.3s;">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-dark mx-lg-2 mt-2 mt-lg-0">Sign Up</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-dark mt-2 mt-lg-0">Login</a>
                 {% endif %}
             </div>
         </div>
-        
     </div>
 </nav>
 
-<!-- Search Bar for Mobile View -->
-<div class="search-container-mb d-lg-none ">
+<!-- Mobile Search Bar (Visible Only in Mobile View) -->
+<div class="search-container-mb d-lg-none">
     <div class="container">
         <form class="d-flex">
             <input class="form-control search-input" type="search" placeholder="Search..." aria-label="Search">
@@ -115,3 +174,61 @@
         </form>
     </div>
 </div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.querySelector(".search-input");
+        const searchResults = document.createElement("div");
+        searchResults.classList.add("search-results");
+        searchResults.style.display = "none"; 
+        searchInput.parentNode.appendChild(searchResults);
+    
+        searchInput.addEventListener("input", function () {
+            let query = searchInput.value.trim();
+            if (query.length > 0) {
+                fetch(`/search/?q=${query}`, {
+                    headers: { "X-Requested-With": "XMLHttpRequest" }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    searchResults.innerHTML = "";
+                    if (data.products.length > 0) {
+                        searchResults.style.display = "block";
+                        data.products.forEach(product => {
+                            if (product.slug) {
+                                let item = document.createElement("div");
+                                item.classList.add("search-item");
+                                item.innerHTML = `
+                                    <a href="/product_details/${product.slug}/" class="search-link">
+                                        <img src="${product.image}" alt="${product.name}" class="search-img">
+                                        <div>
+                                            <h6>${product.name}</h6>
+                                            <div>
+                                                <span>${product.unit_name} ${product.unit}</span>
+                                                
+                                            </div>
+                                        </div>
+                                    </a>
+                                `;
+                                searchResults.appendChild(item);
+                            }
+                        });
+                    } else {
+                        searchResults.innerHTML = "<p class='no-result'>No products found.</p>";
+                    }
+                });
+            } else {
+                searchResults.innerHTML = "";
+            }
+        });
+    
+        document.addEventListener("click", function (event) {
+            if (!searchResults.contains(event.target) && event.target !== searchInput) {
+                searchResults.innerHTML = "";
+            }
+        });
+    });
+    
+</script>

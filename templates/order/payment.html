@@ -3,147 +3,136 @@
 {% block title %} Payment | Dairy to Daily {% endblock title %} 
 {% block styles %}
 <style>
-    .payment-process {
-        width: 80%;
-        margin: 20px auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-  
-      .payment-process h2 {
-        text-align: center;
-        color: #333;
-      }
-  
-      .progress-bars {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-      }
-  
-      .progress-bars .step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-      }
-  
-      .progress-bars .step .icon {
-        background: #ddd;
-        color: #666;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-      }
-  
-      .progress-bars .step.active .icon {
-        background: black;
-        color: white;
-      }
-  
-      .progress-bars .step .label {
-        margin-top: 5px;
-        font-size: 14px;
-        color: #666;
-      }
-  
-      .progress-bars .step.active .label {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-  
-      .form-step {
-        display: none;
-        
-      }
-  
-      .form-step.active {
-        display: block;
-      }
-  
-      .payment-process label {
-        display: block;
-        margin-top: 10px;
-        font-weight: bold;
-      }
-  
-      .payment-process input, select, textarea {
-        width: 15%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-  
-      .payment-process textarea {
-        width: 79%;
-        resize: none;
-      }
-  
-      .payment-process .btn {
-        margin-top: 20px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        background: black;
-        font-weight: bold;
-        font-size: 18px;
-        color: #fff;
-        cursor: pointer;
-      }
-  
-      .payment-process .btn:hover {
-        background: #333;
-      }
-  
-      .payment-process .btn.prev-btn {
-        background: #aaa;
-      }
-  
-      .payment-process .btn.prev-btn:hover {
-        background: #999;
-      }
-  
-      .card-detail input{
-          width: 18%;
-      }
-      .payment-process input[type="text"]#card-number {
-          font-family: 'Courier New', Courier, monospace;
-          font-size: 16px;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-          background-color: #f9f9f9;
-          letter-spacing: 2px;
-        }
-        
-        .payment-process input[type="text"]#card-number::placeholder {
-          color: #aaa;
-          font-size: 14px;
-        }
+  .payment-process {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 
-        .form-step {
-          margin: 20px 0;
+  .payment-process h2 {
+      text-align: center;
+      color: #333;
+  }
+
+  .progress-bars {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+  }
+
+  .progress-bars .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+  }
+
+  .progress-bars .step .icon {
+      background: #ddd;
+      color: #666;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+  }
+
+  .progress-bars .step.active .icon {
+      background: black;
+      color: white;
+  }
+
+  .progress-bars .step .label {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #666;
+  }
+
+  .progress-bars .step.active .label {
+      color: black;
+      font-weight: bold;
+      text-transform: uppercase;
+  }
+
+  .form-step {
+      display: none;
+  }
+
+  .form-step.active {
+      display: block;
+  }
+
+  .payment-process label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+  }
+
+  .payment-process input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  .payment-process textarea {
+      resize: none;
+  }
+
+  .payment-process .btn {
+      margin-top: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: black;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
+      width: 100%;
+  }
+
+  .payment-process .btn:hover {
+      background: #333;
+  }
+
+  .payment-process .btn.prev-btn {
+      background: #aaa;
+  }
+
+  .payment-process .btn.prev-btn:hover {
+      background: #999;
+  }
+
+  .error-message {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 5px;
+  }
+
+  @media (max-width: 600px) {
+      .progress-bars {
+          flex-direction: column;
       }
-      
-      .form-step label {
-          font-weight: bold;
+
+      .progress-bars .step {
+          margin-bottom: 10px;
       }
-      
-      .form-step span {
-          margin-left: 10px;
-          color: #555;
+
+      .progress-bars .step .icon {
+          width: 30px;
+          height: 30px;
+          font-size: 14px;
       }
-      
+  }
 </style>
 {% endblock styles %}
 {% block content %}

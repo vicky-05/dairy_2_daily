@@ -27,7 +27,7 @@ ENCRYPTION_KEY = config('ENCRYPTION_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ '192.168.41.205', '127.0.0.1']
+ALLOWED_HOSTS = [ '192.168.53.205', '127.0.0.1']
 
 
 # Application definition
@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'authentication',
     'subscriptions',
     'orders',
-    'employees'
+    'employees',
+    'chatbot'
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,4 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 AUTH_USER_MODEL = 'authentication.CustomUser'
 
 LOGIN_URL = 'login' 
+

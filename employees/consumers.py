@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 import json
 from orders.models import Order  # Replace 'orders' with your actual app name
+from products.models import Product
 
 class OrderStatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -91,10 +92,26 @@ class OrderStatusConsumer(AsyncWebsocketConsumer):
                (order.status == "Shipping" and status == "Completed"):
                 order.status = status
                 order.save()
+                 # If the order is completed, reduce product quantity
+                if status == "Completed":
+                    try:
+                        # Look up the product using product_name and product_slug
+                        product = Product.objects.get(name=order.product_name, slug=order.product_slug)
+                        
+                        if product.quantity >= order.product_quantity:  # Ensure there is enough stock
+                            product.quantity -= order.product_quantity  # Reduce stock
+                            product.save()
+                        else:
+                            print(f"Not enough stock for {product.name}.")
+                            return False
+                    except Product.DoesNotExist:
+                        print(f"Product {order.product_name} does not exist.")
+                        return False
                 return True
             else:
                 print(f"Invalid status transition: {order.status} -> {status}")
                 return False
+            
         except Order.DoesNotExist:
             print(f"Order {order_id} does not exist.")
             return False

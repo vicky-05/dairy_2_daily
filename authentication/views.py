@@ -13,6 +13,8 @@ from django.http import JsonResponse
 import json
 from .forms import ProfileUpdateForm
 from django.contrib import messages
+from django.utils.timezone import now
+from django.db.models import Sum
 
 User = get_user_model()  # Fetches the custom user model
 
@@ -66,8 +68,39 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
+
+            session_cart = request.session.get('cart', {})
+
+            for slug, item in session_cart.items():
+                try:
+                    product = Product.objects.get(slug=slug)
+
+                    cart_item, created = CartItem.objects.get_or_create(
+                        user=user,
+                        product=product,
+                        defaults={
+                            'quantity': item['quantity'],
+                            'price': item['price'],
+                            'discounted_price': item['discounted_price'],
+                        }
+                    )
+
+                    if not created:
+                        cart_item.quantity += item['quantity']
+                        cart_item.save()
+
+                except Product.DoesNotExist:
+                    continue  # Skip if product no longer exists
+
+            cart_items_count = CartItem.objects.filter(user=user).aggregate(total=Sum('quantity'))['total'] or 0
+            request.session['cart_items_count'] = cart_items_count
+            request.session.modified = True
+
+            request.session['cart'] = {}
+
             messages.success(request, "Login successful!")
-            return redirect('home')  # Redirect to home page after successful login
+            return redirect('home')  # Redirect to home page
+
         else:
             messages.error(request, "Invalid username or password.")
             return redirect('login')  # Redirect back to login page if authentication fails
@@ -150,6 +183,32 @@ def dashboard(request):
     # Fetch the latest subscription details for the logged-in user
     subscription = UserSubscription.objects.filter(user=user).first()
 
+    show_renew_message = False  # Default: Don't show renewal message
+    expiry_days_left = None  # Default: No warning
+    expiry_message=None
+    if subscription:
+        # Check if the subscription is expired
+        if subscription.end_date and subscription.end_date.date() < now().date():
+            show_renew_message = True
+            expiry_message = "Your subscription has expired. Please renew to continue services."
+            # Set the subscription to None in the database
+            user.subscription = None
+            user.save()
+            subscription = None  # Set it to None for template context
+
+
+        else:
+            
+            days_left = (subscription.end_date.date() - now().date()).days
+
+            if days_left == 0:
+                expiry_message = "Your subscription will expire today at midnight."
+            elif 1 <= days_left <= 3:
+                expiry_message = f"Your subscription will end in {days_left} day{'s' if days_left > 1 else ''}."
+            else:
+                expiry_message = None
+
+
     # Fetch the areas assigned to the user via addresses
     assigned_areas = Address.objects.filter(user=user).values_list('pincode_area__area', flat=True)
 
@@ -167,6 +226,8 @@ def dashboard(request):
         'user': user,
         'subscription': subscription,
         'required_steps': required_steps,  # Pass only the required steps
+        'show_renew_message': show_renew_message,
+        'expiry_message': expiry_message
     }
 
 

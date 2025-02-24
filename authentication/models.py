@@ -5,6 +5,8 @@ from cryptography.fernet import Fernet
 from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from products.models import Product
+from decimal import Decimal
 
 class CustomUser(AbstractUser):
     subscription = models.ForeignKey(
@@ -138,3 +140,13 @@ def update_user_subscription(sender, instance, **kwargs):
     if user.subscription == instance.plan:
         user.subscription = None  # Reset the subscription field
         user.save()
+
+class CartItem(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    discounted_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def total_price(self):
+        return self.discounted_price * self.quantity

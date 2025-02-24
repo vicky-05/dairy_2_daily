@@ -37,7 +37,6 @@ def process_order(request, slug, price):
 
 
 
-
 def get_areas_by_pincode(request, pincode):
     if request.method == "GET":
         areas = PincodeArea.objects.filter(pincode=pincode).values("area")
