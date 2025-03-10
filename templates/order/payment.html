@@ -1,0 +1,476 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Payment | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+  .payment-process {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .payment-process h2 {
+      text-align: center;
+      color: #333;
+  }
+
+  .progress-bars {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+  }
+
+  .progress-bars .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+  }
+
+  .progress-bars .step .icon {
+      background: #ddd;
+      color: #666;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+  }
+
+  .progress-bars .step.active .icon {
+      background: black;
+      color: white;
+  }
+
+  .progress-bars .step .label {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #666;
+  }
+
+  .progress-bars .step.active .label {
+      color: black;
+      font-weight: bold;
+      text-transform: uppercase;
+  }
+
+  .form-step {
+      display: none;
+  }
+
+  .form-step.active {
+      display: block;
+  }
+
+  .payment-process label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+  }
+
+  .payment-process input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+  }
+
+  .payment-process textarea {
+      resize: none;
+  }
+
+  .payment-process .btn {
+      margin-top: 20px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: black;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
+      width: 100%;
+  }
+
+  .payment-process .btn:hover {
+      background: #333;
+  }
+
+  .payment-process .btn.prev-btn {
+      background: #aaa;
+  }
+
+  .payment-process .btn.prev-btn:hover {
+      background: #999;
+  }
+
+  .error-message {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 5px;
+  }
+
+  @media (max-width: 600px) {
+      .progress-bars {
+          flex-direction: column;
+      }
+
+      .progress-bars .step {
+          margin-bottom: 10px;
+      }
+
+      .progress-bars .step .icon {
+          width: 30px;
+          height: 30px;
+          font-size: 14px;
+      }
+  }
+</style>
+{% endblock styles %}
+{% block content %}
+    <div class="container payment-process">
+        <h2>Account Payment</h2>
+        <!-- Progress Bar -->
+        <div class="progress-bars">
+        <div class="step active">
+            <div class="icon"><i class="fas fa-user"></i></div>
+            <div class="label">Address Information</div>
+        </div>
+        <div class="step">
+            <div class="icon"><i class="fas fa-credit-card"></i></div>
+            <div class="label">Card Details</div>
+        </div>
+        <div class="step">
+            <div class="icon"><i class="fas fa-check"></i></div>
+            <div class="label">Confirmation</div>
+        </div>
+        
+        </div>
+        <div id="plan-data" data-plan-id="{{ plan_id }}"></div>
+        <!-- Step 1: Address Info -->
+        <form >
+            {% csrf_token %}
+            <div class="form-step active">
+            <h3>Address Information</h3>
+            <label for="pincode">Pincode:</label>
+              <select id="pincode" name="pincode" required>
+                  <option value="" disabled selected>Select Pincode</option>
+                  {% for pin in pincodes %}
+                  <option value="{{ pin.pincode }}">{{ pin.pincode }}</option>
+                  {% endfor %}
+              </select>
+
+              <label for="area">Area:</label>
+              <select id="area" name="area" required>
+                  <option value="" disabled selected>Select Area</option>
+              </select>
+
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" rows="3" required></textarea>
+            <div>
+            <button type="button" class="btn next-btn">Next</button>
+            </div>
+            </div>
+    
+        <!-- Step 2: Card Details -->
+            <div class="form-step card-detail">
+            <h3>Card Details</h3>
+            <label for="card-number">Card Number:</label>
+            <input 
+                type="text" 
+                id="card-number" 
+                name="card-number" 
+                maxlength="19" 
+                placeholder="**** **** **** ****" 
+                required>
+            
+            <label for="expiry-date">Expiry Date:</label>
+            <input type="month" id="expiry-date" name="expiry-date" required>
+            
+            <label for="cvv">CVV:</label>
+            <input type="password" id="cvv" name="cvv" maxlength="3" required>
+
+            <!-- Display Amount -->
+            <label for="amount">Amount:</label>
+            <input 
+                type="text" 
+                id="amount" 
+                name="amount" 
+                value="₹ {{ selected_plan.price }}" 
+                readonly 
+                class="amount-display">
+            
+            <div>
+                <button type="button" class="btn prev-btn">Back</button>
+                <button type="button" class="btn next-btn">Next</button>
+            </div>  
+            </div>
+
+            
+    
+            <!-- Step 3: Confirmation -->
+            <div class="form-step">
+              <h3>Confirmation</h3>
+              <p>Please review your details before submitting.</p>
+
+              <label for="pincode">Pincode:</label>
+              <span id="pincode-value"></span><br>
+
+              <label for="area">Area:</label>
+              <span id="area-value"></span><br>
+
+              <label for="address">Address:</label>
+              <span id="address-value"></span><br>
+
+              <label for="plan">Membership Plan:</label>
+              <span id="plan-value">{{ selected_plan.name }}</span><br>
+
+              <label for="amount">Amount:</label>
+              <span id="amount-value">--</span><br>
+
+              <div>
+                  <button type="button" class="btn prev-btn">Back</button>
+                  <button type="submit" class="btn" id="submit-btn" data-url="{% url 'process_payment' %}">Submit</button>
+              </div>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock content %}
+{% block scripts %}
+<script>
+  const steps = document.querySelectorAll('.progress-bars .step');
+  const formSteps = document.querySelectorAll('.form-step');
+  const nextBtns = document.querySelectorAll('.next-btn');
+  const prevBtns = document.querySelectorAll('.prev-btn');
+  const planIdElement = document.getElementById("plan-data");
+  const planId = planIdElement.getAttribute("data-plan-id");
+  let currentStep = 0;
+  
+  // Add event listeners for Next buttons
+  nextBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+          if (validateStep(currentStep)) { // Check validation before advancing
+              if (currentStep < steps.length - 1) {
+                  steps[currentStep].classList.remove('active');
+                  formSteps[currentStep].classList.remove('active');
+                  currentStep++;
+                  steps[currentStep].classList.add('active');
+                  formSteps[currentStep].classList.add('active');
+              }
+          }
+      });
+  });
+  
+  // Add event listeners for Previous buttons
+  prevBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+          if (currentStep > 0) {
+              steps[currentStep].classList.remove('active');
+              formSteps[currentStep].classList.remove('active');
+              currentStep--;
+              steps[currentStep].classList.add('active');
+              formSteps[currentStep].classList.add('active');
+          }
+      });
+  });
+  
+  // Card number formatting
+  const cardNumberInput = document.getElementById("card-number");
+  cardNumberInput.addEventListener("input", (e) => {
+      let input = e.target.value.replace(/\D/g, "");
+      input = input.match(/.{1,4}/g)?.join(" ") || "";
+      e.target.value = input;
+  });
+  
+// Validation function with inline error messages
+function validateStep(stepIndex) {
+  const inputs = formSteps[stepIndex].querySelectorAll("input, select, textarea");
+  let isValid = true;
+
+  inputs.forEach((input) => {
+      const errorContainer = input.nextElementSibling;
+      if (errorContainer && errorContainer.classList.contains("error-message")) {
+          errorContainer.textContent = ""; // Clear previous error messages
+      }
+
+      if (input.id === "card-number") {
+          const cardNumber = input.value.replace(/\s+/g, ""); // Remove spaces
+          if (!/^\d{16}$/.test(cardNumber)) {
+              isValid = false;
+              input.classList.add("is-invalid");
+              showError(input, "Card number must be 16 digits.");
+          } else {
+              input.classList.remove("is-invalid");
+          }
+      } else if (input.id === "cvv") {
+          if (!/^\d{3}$/.test(input.value)) {
+              isValid = false;
+              input.classList.add("is-invalid");
+              showError(input, "CVV must be 3 digits.");
+          } else {
+              input.classList.remove("is-invalid");
+          }
+      } else if (!input.checkValidity()) {
+          isValid = false;
+          input.classList.add("is-invalid");
+          showError(input, "This field is required.");
+      } else {
+          input.classList.remove("is-invalid");
+      }
+  });
+
+  return isValid;
+}
+
+// Function to show error message
+function showError(input, message) {
+  let errorContainer = input.nextElementSibling;
+  if (!errorContainer || !errorContainer.classList.contains("error-message")) {
+      errorContainer = document.createElement("div");
+      errorContainer.classList.add("error-message");
+      input.parentNode.insertBefore(errorContainer, input.nextSibling);
+  }
+  errorContainer.textContent = message;
+}
+
+  
+  // Style for invalid fields
+  const style = document.createElement("style");
+  style.innerHTML = `
+      .is-invalid {
+          border-color: red !important;
+      }
+      .error-message {
+        color: red;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+      }
+  `;
+  document.head.appendChild(style);
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const pincodeDropdown = document.getElementById("pincode");
+    const areaDropdown = document.getElementById("area");
+
+    pincodeDropdown.addEventListener("change", () => {
+        const selectedPincode = pincodeDropdown.value;
+
+        // Reset Area Dropdown
+        areaDropdown.innerHTML = '<option value="" disabled selected>Select Area</option>';
+
+        if (selectedPincode) {
+          fetch(`/subscriptions/subscribe/${planId}/get-areas/${selectedPincode}/`)
+                .then((response) => response.json())
+                .then((data) => {
+                    data.areas.forEach((item) => {
+                        const option = document.createElement("option");
+                        option.value = item.area;
+                        option.textContent = item.area;
+                        areaDropdown.appendChild(option);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error fetching areas:", error);
+                });
+        }
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const cardNumberInput = document.getElementById("card-number");
+  const url = document.querySelector("#submit-btn").dataset.url;
+
+  if (cardNumberInput) {
+      cardNumberInput.addEventListener("input", function () {
+          let value = this.value.replace(/\D/g, "");
+          this.value = value.replace(/(\d{4})(?=\d)/g, "$1 ");
+      });
+  }
+
+  document.querySelector("#submit-btn").addEventListener("click", function (e) {
+      e.preventDefault();
+
+      // Gather form data
+      const pincode = document.getElementById("pincode").value;
+      const area = document.getElementById("area").value;
+      const address = document.getElementById("address").value;
+      const expiryDate = document.getElementById("expiry-date").value;
+      const cvv = document.getElementById("cvv").value;
+      const cardNumber = document.getElementById("card-number").value;
+
+      // Prepare POST data
+      const formData = new FormData();
+      formData.append("plan_id", planId);
+      formData.append("pincode", pincode);
+      formData.append("area", area);
+      formData.append("address", address);
+      formData.append("card_number", cardNumber.replace(/\s+/g, "")); // Remove spaces
+      formData.append("expiry_date", expiryDate);
+      formData.append("cvv", cvv);
+
+      // Send AJAX request
+      fetch(document.querySelector("#submit-btn").dataset.url, {
+          method: "POST",
+          headers: {
+              "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+          },
+          body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === "success") {
+              // Redirect the user to the payment-success page
+              window.location.href = data.redirect_url;
+          } else {
+              alert("Error: " + data.message);
+          }
+      })
+      .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred. Please try again.");
+      });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Example: Form data elements
+  const pincodeInput = document.getElementById("pincode"); // Assuming an input for pincode
+  const areaInput = document.getElementById("area");       // Assuming an input for area
+  const addressInput = document.getElementById("address"); // Assuming an input for address
+  const amountInput = document.getElementById("amount");   // Assuming an input for amount
+
+  // Placeholders in the confirmation section
+  const pincodeValue = document.getElementById("pincode-value");
+  const areaValue = document.getElementById("area-value");
+  const addressValue = document.getElementById("address-value");
+  const amountValue = document.getElementById("amount-value");
+
+  // Add an event listener to populate confirmation step data
+  const nextButtons = document.querySelectorAll(".next-btn");
+  nextButtons.forEach(button => {
+      button.addEventListener("click", () => {
+          // Populate confirmation section
+          pincodeValue.textContent = pincodeInput.value || "Not provided";
+          areaValue.textContent = areaInput.value || "Not provided";
+          addressValue.textContent = addressInput.value || "Not provided";
+          amountValue.textContent = amountInput.value || "--";
+      });
+  });
+});
+
+
+</script>
+
+{% endblock scripts %}

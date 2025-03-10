@@ -1,0 +1,99 @@
+
+
+.newspaper-layout {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+}
+
+.news-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.news-header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.news-header p {
+    font-size: 1rem;
+    margin: 5px 0 0;
+    color: #555;
+}
+
+.news-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.main-image {
+    flex: 1 1 60%;
+    text-align: center;
+}
+
+.main-image img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.main-image .caption {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.article {
+    flex: 1 1 40%;
+}
+
+.article h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.article p {
+    margin-bottom: 10px;
+    text-align: justify;
+}
+
+.sidebar {
+    flex: 1 1 100%;
+    border-top: 2px solid #000;
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+.sidebar h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    font-size: 0.9rem;
+    text-align: justify;
+}
+
+.news-footer {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 20px;
+    border-top: 2px solid #000;
+    padding-top: 10px;
+    font-weight: bold;
+}
+/* Footer */
+.blog-footer {
+    text-align: center;
+    padding: 10px;
+    color: #555;
+}

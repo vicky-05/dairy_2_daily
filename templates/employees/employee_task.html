@@ -1,0 +1,264 @@
+{% extends 'layout/employee_base.html' %}
+{% load static %}
+{% block title %} Employee Task | Dairy to Daily {% endblock title %}
+{% block styles %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .manage-orders-header {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+    }
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    .order-list {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    table th, table td {
+        text-align: center;
+        max-width: 200px;
+    }
+    h3 {
+        margin-top: 2rem;
+    }
+    table {
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<body>
+    {% include 'inc/toast.html' %}
+    <!-- Header -->
+    <div class="manage-orders-header">
+
+        <h1>Manage {% if manage_order_type == 'Subscription' %}Subscription Orders{% else %}Product Orders {% endif %}</h1>
+    </div>
+
+    {% if manage_order_type == 'Product'%}
+    <!-- Active Orders Section -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">Active Orders</h4>
+                    </div>
+                    <div class="card-body order-list">
+                        <!-- Orders Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Customer Area</th>
+                                    <th>Customer Address</th>
+                                    <th>Product Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                    {% if order.status != "Completed" %}
+                                    <tr id="order-{{ order.id }}">
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.user.username }}</td>
+                                        <td>{{ order.shipping_details.area }}</td>
+                                        <td>{{ order.shipping_details.address }}</td>
+                                        <td>{{ order.product_name }}</td>
+                                        <td><span class="badge bg-warning text-dark order-status">{{ order.status }}</span></td>
+                                        <td>
+                                            <!-- Start button is enabled only if status is "Pending" -->
+                                            <button class="btn btn-primary btn-sm start-btn" data-order-id="{{ order.id }}" 
+                                                {% if order.status != "Pending" %}disabled{% endif %}>
+                                                Start
+                                            </button>
+                                            
+                                            <!-- Deliver button is enabled only if status is "Shipping" -->
+                                            <button class="btn btn-success btn-sm deliver-btn" data-order-id="{{ order.id }}" 
+                                                {% if order.status != "Shipping" %}disabled{% endif %}>
+                                                Deliver
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No orders to manage.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <!-- Delivered Orders Section -->
+    <div class="container mt-4" id="delivered-orders-section" style="display: none;">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Delivered Orders</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Delivered Orders Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Customer Area</th>
+                                    <th>Customer Address</th>
+                                    <th>Product Name</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="delivered-orders-body">
+                                <!-- Delivered orders will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+
+</body>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Function to update order status in the DOM
+        function updateOrderStatus(orderId, newStatus) {
+            const orderRow = document.querySelector(`#order-${orderId}`);
+            if (orderRow) {
+                const statusBadge = orderRow.querySelector('.order-status');
+                const startButton = orderRow.querySelector('.start-btn');
+                const deliverButton = orderRow.querySelector('.deliver-btn');
+
+                // Update status badge text
+                statusBadge.textContent = newStatus;
+
+                // Adjust button states based on the new status
+                if (newStatus === 'Shipping') {
+                    startButton.disabled = true;
+                    deliverButton.disabled = false;
+                } else if (newStatus === 'Completed') {
+                    startButton.disabled = true;
+                    deliverButton.disabled = true;
+                    moveToDeliveredSection(orderRow, orderId);
+                }
+            }
+        }
+
+        // Move order to Delivered section
+        function moveToDeliveredSection(orderRow, orderId) {
+            const deliveredOrdersSection = document.getElementById('delivered-orders-section');
+            const deliveredOrdersBody = document.getElementById('delivered-orders-body');
+
+            // Clone the row and add it to the Delivered Orders table
+            const deliveredRow = orderRow.cloneNode(true);
+            deliveredRow.querySelector('.start-btn').remove();
+            deliveredRow.querySelector('.deliver-btn').remove();
+            deliveredOrdersBody.appendChild(deliveredRow);
+
+            // Hide the order in the Active Orders section
+            orderRow.style.display = 'none';
+
+            // Show Delivered Orders section if it's not visible yet
+            deliveredOrdersSection.style.display = 'block';
+        }
+
+        // Attach event listeners to Start buttons
+        document.querySelectorAll('.start-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const orderId = this.getAttribute('data-order-id');
+                handleOrderWebSocket(orderId, 'Shipping');
+            });
+        });
+
+        // Attach event listeners to Deliver buttons
+        document.querySelectorAll('.deliver-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const orderId = this.getAttribute('data-order-id');
+                handleOrderWebSocket(orderId, 'Completed');
+            });
+        });
+
+        // Handle WebSocket connection and status updates for a specific order
+        function handleOrderWebSocket(orderId, status) {
+
+            if(orderId){
+            const socket = new WebSocket('ws://' + window.location.host + '/ws/orders/' + orderId + '/');
+
+            socket.onopen = () => {
+                console.log(`WebSocket connected for order ID: ${orderId}`);
+                sendOrderStatusUpdate(socket, orderId, status);
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.order_id === orderId) {
+                    updateOrderStatus(orderId, data.status);
+                }
+            };
+
+            socket.onerror = (error) => {
+                console.error(`WebSocket error for order ID: ${orderId}`, error);
+            };
+
+            socket.onclose = () => {
+                console.log(`WebSocket connection closed for order ID: ${orderId}`);
+            };
+
+        }
+        else{
+            console.error("Invalid or missing order ID for WebSocket connection.");
+}
+
+            function sendOrderStatusUpdate(socket, orderId, status) {
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({
+                        type: 'order_status_update',
+                        order_id: orderId,
+                        status: status
+                    }));
+                } else {
+                    console.error(`WebSocket is not open for order ID: ${orderId}`);
+                }
+            }
+        }
+    });
+
+    
+    
+</script>
+{% endblock scripts %}

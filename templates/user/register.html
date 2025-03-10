@@ -1,0 +1,169 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Register | Dairy to Daily {% endblock title %} 
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<style>
+    .is-invalid {
+        border: 2px solid red !important;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+    }
+    .shake {
+        animation: shake 0.3s ease-in-out;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+{% include 'inc/toast.html' %}
+<div class="register-container">
+    <div class="register-box">
+        <h2>Create an Account</h2>
+        <form id="registerForm" method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+            </div>
+            <div class="mb-3">
+                <label for="confirm-password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm_password" placeholder="Confirm your password">
+            </div>
+            <div class="mb-3">
+                <label for="security-question" class="form-label">Select a Security Question</label>
+                <select class="form-control" id="security-question" name="security_question">
+                    <option value="">-- Select a Question --</option>
+                    <option value="What is your pet’s name?">What is your pet’s name?</option>
+                    <option value="What is your favorite color?">What is your favorite color?</option>
+                    <option value="What city were you born in?">What city were you born in?</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="security-answer" class="form-label">Your Answer</label>
+                <input type="text" class="form-control" id="security-answer" name="security_answer" placeholder="Enter your answer">
+            </div>
+            
+            <button type="submit" class="btn btn-register">Register</button>
+            <span class="login-link">Already have an account? <a href="{% url 'login' %}">Login</a></span>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="errorToast" class="toast bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body"></div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    document.getElementById("registerForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+    
+        let username = document.getElementById("username");
+        let email = document.getElementById("email");
+        let password = document.getElementById("password");
+        let confirmPassword = document.getElementById("confirm-password");
+        let securityQuestion = document.getElementById("security-question");
+        let securityAnswer = document.getElementById("security-answer");
+    
+        let toastBody = document.querySelector("#errorToast .toast-body");
+        let toastElement = document.getElementById("errorToast");
+        let toast = new bootstrap.Toast(toastElement);
+    
+        // Remove previous error styles
+        [username, email, password, confirmPassword, securityQuestion, securityAnswer].forEach(input =>
+            input.classList.remove("is-invalid")
+        );
+    
+        function showToast(message) {
+            if (message) {
+                toastBody.innerText = message;
+                toast.show();
+            }
+        }
+    
+        function shakeInput(input) {
+            input.classList.add("is-invalid", "shake");
+            setTimeout(() => input.classList.remove("shake"), 300);
+        }
+    
+        // Username validation
+        if (username.value.trim() === "") {
+            showToast("Username is required!");
+            shakeInput(username);
+            return;
+        }
+    
+        // Email validation
+        let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+        if (!email.value.match(emailPattern)) {
+            showToast("Enter a valid email address!");
+            shakeInput(email);
+            return;
+        }
+    
+        // Password length validation
+        if (password.value.length < 6) {
+            showToast("Password must be at least 6 characters long!");
+            shakeInput(password);
+            return;
+        }
+    
+        // Confirm password validation
+        if (password.value !== confirmPassword.value) {
+            showToast("Passwords do not match!");
+            shakeInput(confirmPassword);
+            return;
+        }
+    
+        // Security question validation
+        if (securityQuestion.value.trim() === "") {
+            showToast("Please select a security question!");
+            shakeInput(securityQuestion);
+            return;
+        }
+    
+        // Security answer validation
+        if (securityAnswer.value.trim() === "") {
+            showToast("Security answer cannot be empty!");
+            shakeInput(securityAnswer);
+            return;
+        }
+    
+        // If all validations pass, submit the form manually
+        this.submit();
+    });
+    
+    // Hide empty toast on page load
+    window.addEventListener("DOMContentLoaded", function () {
+        let toastBody = document.querySelector("#errorToast .toast-body");
+        if (!toastBody.innerText.trim()) {
+            let toastElement = document.getElementById("errorToast");
+            toastElement.classList.remove("show"); // Hide the toast if no message
+        }
+    });
+    
+</script>
+
+{% endblock scripts %}

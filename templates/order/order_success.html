@@ -1,0 +1,60 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Order Success | Dairy to Daily {% endblock title %} 
+
+{% block styles %}
+<style>
+    .order-summary {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 2px solid #333;
+    }
+    .order-icon {
+        font-size: 50px;
+        color: #333;
+    }
+    .order-details {
+        margin-top: 20px;
+    }
+    .btn-back {
+        background-color: #333;
+        color: white;
+        border: none;
+    }
+    .btn-back:hover {
+        background-color: #0f0e0e;
+        color: #fff;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+{% include 'inc/toast.html' %}
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 mt-5">
+            <div class="order-summary text-center">
+                <div class="order-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="text-dark">Order Successful!</h2>
+                <p>Your order has been placed successfully.</p>
+
+                <div class="order-details">
+                    <h4>Order Details:</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item">Order ID: #{{ order.id }}</li>
+                        <li class="list-group-item">Customer Name: {{ order.user.username }}</li>
+                        <li class="list-group-item">Items: {{ order.product_name }}</li>
+                        <li class="list-group-item">Total: ₹{{ order.amount }}</li>
+                    </ul>
+                </div>
+
+                <a href="{% url 'dashboard' %}" class="btn btn-back mt-4">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

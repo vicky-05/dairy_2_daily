@@ -1,0 +1,92 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Privacy & Policy | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+
+    .privacy-container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .privacy-container h2 {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .privacy-container h4 {
+        font-weight: bold;
+        margin-top: 30px;
+    }
+    .privacy-content {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .privacy-image {
+        display: block;
+        max-width: 100%;
+        width: 500px;
+        margin: 30px auto;
+    }
+    .footers {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+
+<div class="privacy-container" data-aos="fade-up">
+    <h2>Privacy Policy</h2>
+
+    <!-- Data Collection -->
+    <h4 data-aos="fade-right">1. Data Collection</h4>
+    <p class="privacy-content">
+        We collect personal information such as name, address, phone number, and payment details to ensure smooth order processing. Your data is stored securely.
+    </p>
+
+    <!-- Data Usage -->
+    <h4 data-aos="fade-right">2. How We Use Your Data</h4>
+    <p class="privacy-content">
+        Your data is used for order fulfillment, customer support, and service improvement. We do not sell your information to third parties.
+    </p>
+
+    <!-- Image in Between Content -->
+    <img src="{% static 'images/P&P (2).png' %}" alt="Data Security" class="privacy-image" data-aos="zoom-in">
+    <!-- Data Security -->
+    <h4 data-aos="fade-right">3. Data Security</h4>
+    <p class="privacy-content">
+        We implement strong security measures to protect your personal information from unauthorized access, alteration, and misuse.
+    </p>
+
+    <!-- Cookies & Tracking -->
+    <h4 data-aos="fade-right">4. Cookies & Tracking</h4>
+    <p class="privacy-content">
+        We use cookies to enhance your browsing experience. You can disable cookies in your browser settings if you prefer.
+    </p>
+
+    <!-- Third-Party Links -->
+    <h4 data-aos="fade-right">5. Third-Party Services</h4>
+    <p class="privacy-content">
+        Our website may contain links to third-party services. We are not responsible for their privacy practices.
+    </p>
+
+    <!-- Privacy Policy Updates -->
+    <h4 data-aos="fade-right">6. Changes to Privacy Policy</h4>
+    <p class="privacy-content">
+        We may update this policy from time to time. Any changes will be posted on this page with the latest revision date.
+    </p>
+
+    <!-- Footer -->
+    <div class="footers">
+        <p>For privacy concerns, contact us at <strong>support@dairytodaily.com</strong></p>
+    </div>
+</div>
+
+{% endblock content %}

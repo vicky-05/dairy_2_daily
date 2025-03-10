@@ -1,0 +1,105 @@
+categories:
+  - Dairy FAQs
+
+conversations:
+  - - "What products do you sell?"
+    - "We sell fresh cow milk and milk by-products like curd, cheese, and palkova."
+
+  - - "Do you deliver daily?"
+    - "Yes, we deliver fresh milk every morning and evening."
+
+  - - "What is the cost of 1 liter of milk?"
+    - "The cost of 1 liter of fresh cow milk is ₹50."
+
+  - - "What areas do you deliver to?"
+    - "We deliver within a 50 km radius of the city."
+
+  - - "Is your milk organic?"
+    - "Yes, our milk is 100% organic and free from preservatives."
+
+  - - "Do you offer discounts on bulk purchases?"
+    - "Yes, we offer discounts for large orders. Contact us for details."
+
+  - - "How do I subscribe to daily milk delivery?"
+    - "You can subscribe by visiting our website and selecting a suitable plan."
+
+  - - "Can I cancel my subscription?"
+    - "Yes, you can cancel your subscription at any time by logging into your account and going to the 'Subscription' section."
+
+  - - "How do I create an account?"
+    - "Click on the 'Sign Up' button on our website and fill in your details."
+
+  - - "Can I update my account information?"
+    - "Yes, you can update your account details anytime in the 'Profile' section."
+
+  - - "How do I reset my password?"
+    - "Click on 'Forgot Password' and follow the instructions to reset it."
+
+  - - "How do I delete my account?"
+    - "Please contact customer support, and they will assist you with the process."
+
+  - - "How do I check my order history?"
+    - "Log into your account and navigate to the 'Order History' section."
+
+  - - "Can I share my account with others?"
+    - "For security reasons, we recommend keeping your account details confidential."
+
+  - - "How do I unsubscribe from emails?"
+    - "Click on the 'Unsubscribe' link in the footer of any of our emails."
+
+  - - "What payment methods do you accept?"
+    - "We accept all major credit and debit cards."
+
+  - - "Is my personal information secure?"
+    - "Yes, we prioritize your privacy and security. All your data is encrypted and confidential."
+
+  - - "How can I contact customer support?"
+    - "Call us at +91-9876543210 or email support@dairytodaily.com."
+
+  - - "Do you offer a referral program?"
+    - "Currently, we do not have a referral program, but we are considering one in the future."
+
+  - - "Hello"
+    - "Hi! How can we assist you today?"
+  - - "Hi"
+    - "Hi! How can we assist you today?"
+  - - "Hi there"
+    - "Hi! How can we assist you today?"
+  - - "Hello there"
+    - "Hi! How can we assist you today?"
+
+  - - "Good morning"
+    - "Good morning! How can we help you today?"
+  - - "Good evening"
+    - "Good evening! How may we assist you?"
+
+  - - "How are you?"
+    - "I'm doing great, thank you! How can I help you?"
+  - - "What’s up?"
+    - "Not much, just here to assist you! How can I help?"
+  - - "How’s it going?"
+    - "Everything's going well! How can I help you today?"
+  - - "What’s new?"
+    - "Everything's fresh! Anything I can assist you with?"
+
+  - - "Bye"
+    - "Goodbye! Have a great day!"
+  - - "See you later"
+    - "Goodbye! Have a great day!"
+  - - "Have a nice day"
+    - "Goodbye! Have a great day!"
+  - - "Goodbye"
+    - "Goodbye! Have a great day!"
+
+  - - "Thanks"
+    - "You're welcome! If you need anything else, just let me know."
+  - - "Thanks a lot"
+    - "You're welcome! If you need anything else, just let me know."
+  - - "You're welcome"
+    - "You're welcome! If you need anything else, just let me know."
+
+  - - "Sorry"
+    - "It's okay! Let me know if you need anything else."
+  - - "I'm sorry"
+    - "It's okay! Let me know if you need anything else."
+    

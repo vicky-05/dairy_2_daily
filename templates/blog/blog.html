@@ -1,0 +1,58 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Blog | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<section class="blog-page py-2">
+    <div class="container">
+        <h1 class="text-center mb-4">Our Blog</h1>
+        <!-- Featured Blog Section -->
+        <div class="featured-blog mb-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <img src="/static/images/benefits-of-milk.jpg" alt="Benefits of Organic Milk" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-lg-6">
+                    <h2>Benefits of Organic Milk</h2>
+                    <p>
+                        Organic milk is not just a trend; it’s a lifestyle choice. From boosting your immunity to 
+                        reducing chemical intake, the benefits are endless. Dive in to learn why it’s the healthier choice.
+                    </p>
+                    <a href="{% url 'organic_milk' %}" class="btn btn-dark">Read More</a>
+                </div>
+            </div>
+        </div>
+        <!-- Blog Grid Section -->
+        <div class="blog-grid">
+            <div class="row gy-4">
+                <!-- Blog Item -->
+                <div class="col-md-4">
+                    <div class="blog-card shadow rounded">
+                        <img src="/static/images/organic-milk-Organic-Boosting1.jpg" alt="Blog Post" class="img-fluid rounded">
+                        <div class="p-3">
+                            <h5>Why Fresh Milk is Best</h5>
+                            <p>Discover how fresh milk differs from processed milk and its direct benefits for your health.</p>
+                            <a href="{% url 'fresh_milk' %}" class="btn btn-outline-dark">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Blog Item -->
+                <div class="col-md-4">
+                    <div class="blog-card shadow rounded">
+                        <img src="/static/images/dairy-cows.jpg" alt="Blog Post" class="img-fluid rounded">
+                        <div class="p-3">
+                            <h5>The Journey of Milk</h5>
+                            <p>Take a sneak peek into how we care for our cows to ensure the highest quality milk.</p>
+                            <a href="{% url 'journey_milk' %}" class="btn btn-outline-dark">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

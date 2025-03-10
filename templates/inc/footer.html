@@ -1,0 +1,45 @@
+{% load static %}
+<!-- Footer Section -->
+<footer class="footer bg-dark text-light py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Location -->
+            <div class="col-md-4 mb-3">
+                <h5 >Location</h5>
+                <!-- Updated image for location -->
+                <img src=" {% static 'images/map-location.jpg' %}" alt="Location" class="location-img">
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="col-md-4 mb-3">
+                <h5 >Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" class="text-light text-decoration-none">Home</a></li>
+                    <li><a href="{% url 'about' %}" class="text-light text-decoration-none">About Us</a></li>
+                    <li><a href="{% url 'product_collection' %}" class="text-light text-decoration-none">Products</a></li>
+                    <li><a href="{% url 'blog' %}" class="text-light text-decoration-none">Blog</a></li>
+                    <li><a href="{% url 'terms_condition' %}" class="text-light text-decoration-none">Terms & Conditions</a></li>
+                    <li><a href="{% url 'privacy_policy' %}" class="text-light text-decoration-none">Privacy Policy</a></li>
+                    <li><a href="{% url 'help' %}" class="text-light text-decoration-none">HeLp & Support</a></li>
+                </ul>
+            </div>
+            <!-- Contact Info -->
+            <div class="col-md-4 mb-3">
+                <h5 >Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-geo-alt"></i> City Center, 123 Main Street</li>
+                    <li><i class="bi bi-envelope"></i> support@dairytodaily.com</li>
+                    <li><i class="bi bi-phone"></i> +91 9876543210</li>
+                </ul>
+                <div class="social-icons mt-3">
+                    <a href="#" class="text-light me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-light me-2"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-light"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <p class="text-muted small mb-0">&copy; 2024 Dairy to Daily. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,246 @@
+{% extends 'layout/employee_base.html' %}
+{% load static %}
+{% block title %} Employee Task | Dairy to Daily {% endblock title %}
+{% block styles %}
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+    .manage-orders-header {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+    }
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border: none;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+    }
+    .order-list {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    table th, table td {
+        text-align: center;
+        max-width: 200px;
+    }
+    h3 {
+        margin-top: 2rem;
+    }
+    table {
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<!-- Subscription Orders Section -->
+{% if manage_order_type == "Subscription" %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Subscription Delivery Tracking</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Subscription Tracking Table -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Farm</th>
+                                <th>Peraiyur</th>
+                                <th>Tallakulam</th>
+                                <th>Goripalayam</th>
+                                <th>K.Pudur</th>
+                                <th>Othakadai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="subscription-tracking">
+                                <!-- Farm Column -->
+                                <td>
+                                    <button class="btn btn-primary btn-sm start-btn" id="start-btn-farm" data-area="Farm" disabled>
+                                        Start (Unavailable)
+                                    </button>
+                                </td>
+                        
+                                <!-- Peraiyur Column -->
+                                <td>
+                                    <button class="btn btn-success btn-sm delivery-btn" id="delivery-btn-peraiyur" data-area="Peraiyur" disabled>
+                                        Deliver
+                                    </button>
+                                </td>
+                        
+                                <!-- Tallakulam Column -->
+                                <td>
+                                    <button class="btn btn-success btn-sm delivery-btn" id="delivery-btn-tallakulam" data-area="Tallakulam" disabled>
+                                        Deliver
+                                    </button>
+                                </td>
+                        
+                                <!-- Goripalayam Column -->
+                                <td>
+                                    <button class="btn btn-success btn-sm delivery-btn" id="delivery-btn-goripalayam" data-area="Goripalayam" disabled>
+                                        Deliver
+                                    </button>
+                                </td>
+                        
+                                <!-- K.Pudur Column -->
+                                <td>
+                                    <button class="btn btn-success btn-sm delivery-btn" id="delivery-btn-kpudur" data-area="K.Pudur" disabled>
+                                        Deliver
+                                    </button>
+                                </td>
+                        
+                                <!-- Othakadai Column -->
+                                <td>
+                                    <button class="btn btn-success btn-sm delivery-btn" id="delivery-btn-othakadai" data-area="Othakadai" disabled>
+                                        Deliver
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock content %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ws = new WebSocket(`ws://${window.location.host}/ws/subscriptions/`);
+        
+            ws.onopen = () => console.log("WebSocket connected for subscription management.");
+            ws.onerror = (error) => console.error("WebSocket error:", error);
+            ws.onclose = () => console.log("WebSocket closed.");
+        
+            const startButton = document.getElementById('start-btn-farm');
+            const deliveryButtons = [
+                document.getElementById('delivery-btn-peraiyur'),
+                document.getElementById('delivery-btn-tallakulam'),
+                document.getElementById('delivery-btn-goripalayam'),
+                document.getElementById('delivery-btn-kpudur'),
+                document.getElementById('delivery-btn-othakadai')
+            ];
+            const delayDisplay = document.getElementById('delay-time'); // Element to display delay
+        
+            let delaySeconds = 0; // Store delay in seconds
+        
+            function calculateDelay() {
+                const now = new Date();
+                const morningStart = new Date();
+                const eveningStart = new Date();
+                console.log(now)
+                morningStart.setHours(10, 27, 0);  // 5:30 AM
+                eveningStart.setHours(13, 30, 0); 
+            
+                let expectedStart = null;
+            
+                if (now >= morningStart && now < eveningStart) {
+                    // Morning session (5:30 AM to 9:29 PM)
+                    expectedStart = morningStart;
+                } else {
+                    
+                    expectedStart = eveningStart;
+                }
+            
+                if (now < expectedStart) {
+                    // If the current time is before the expected start time, delay is 0
+                    delaySeconds = 0;
+                } else {
+                    const delayMs = now - expectedStart;
+                    delayMinutes = Math.floor(delayMs / 60000); // Convert milliseconds to minutes
+                }
+            
+                
+                
+            }
+            
+            
+            function enableStartButton() {
+                const now = new Date();
+                const morningStart = new Date();
+                const morningEnd = new Date();
+                const eveningStart = new Date();
+                const eveningEnd = new Date();
+        
+                morningStart.setHours(10, 27, 0);
+                morningEnd.setHours(11, 0, 0);
+                eveningStart.setHours(13, 30, 0); 
+                eveningEnd.setHours(15, 50, 0); 
+        
+                if ((now >= morningStart && now <= morningEnd) || (now >= eveningStart && now <= eveningEnd)) {
+                    startButton.removeAttribute('disabled');
+                    startButton.textContent = now < eveningStart ? 'Start Morning' : 'Start Evening';
+                } else {
+                    startButton.setAttribute('disabled', true);
+                    startButton.textContent = 'Start (Unavailable)';
+                }
+            }
+        
+            enableStartButton();
+            setInterval(enableStartButton, 1000);
+        
+            startButton.addEventListener('click', () => {
+                calculateDelay(); // Calculate delay when clicking the start button
+        
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        area: "Farm",
+                        message: "Start from Farm",
+                        action: "start",
+                        delay: delayMinutes // Send delay seconds to WebSocket
+                    }));
+        
+                    startButton.setAttribute('disabled', true);
+                    deliveryButtons[0].removeAttribute('disabled');
+                } else {
+                    console.log("WebSocket is not open.");
+                }
+            });
+        
+            deliveryButtons.forEach((button, index) => {
+                button.addEventListener('click', () => {
+                    if (ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({
+                            area: button.dataset.area,
+                            message: `Delivered at ${button.dataset.area}`,
+                            action: "deliver",
+                            delay: delayMinutes // Pass delay to all areas
+                        }));
+                        button.setAttribute('disabled', true);
+        
+                        if (index + 1 < deliveryButtons.length) {
+                            deliveryButtons[index + 1].removeAttribute('disabled');
+                        }
+                    } else {
+                        console.log("WebSocket is not open.");
+                    }
+                });
+            });
+        });
+    </script>
+    
+
+{% endblock scripts %}

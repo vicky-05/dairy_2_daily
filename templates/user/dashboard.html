@@ -1,0 +1,545 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Dashboard | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+
+
+    .cancel-btn:hover {
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+        
+    }
+    .confirm-cancel-btn:hover{
+        background-color: red;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+
+    }
+    .success-btn:hover{
+        background-color: green;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    /* Timeline Container */
+.timeline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+/* Step Style */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    margin-bottom: 30px; /* Space for drop lines */
+}
+
+/* Icon Container */
+.icon-container {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon {
+    font-size: 1.5rem;
+    color: #666;
+    transition: color 0.3s, transform 0.3s, background-color 0.3s;
+}
+
+.step-label {
+    margin-top: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* Completed and Active Styles */
+.step.completed .icon-container {
+    background-color: #28a745;
+}
+
+.step.completed .step-icon {
+    color: #fff;
+}
+
+.step.active .icon-container {
+    background-color: #007bff;
+}
+
+.step.active .step-icon {
+    color: #fff;
+    transform: scale(1.3);
+}
+
+/* Line Styles */
+.line {
+    flex: 1;
+    height: 2px;
+    background-color: green;
+    position: relative;
+}
+
+.line.ship-line {
+    height: 4px;
+    background-color: #007bff;
+    position: relative;
+}
+.line.pend-line{
+    height: 4px;
+    background-color: #666;
+    position: relative;
+}
+.line.completed {
+    background-color: #28a745;
+}
+
+
+
+.line.drop-line.completed {
+    background-color: #28a745;
+}
+
+
+    
+</style>
+{% endblock styles %}
+
+{% block content %}
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<div class="container-fluid main-layout">
+    <div class="row">
+        <!-- Sidebar (Desktop and Tablet View) -->
+        <nav class="sidebar col-md-3 col-lg-2 p-3 d-none d-md-block" id="sidebar">
+            <h2 class="text-center fw-bold">Dashboard</h2>
+            <ul class="nav flex-column mt-3" id="sidebar-menu">
+                <li class="nav-item"><a href="#overview" class="nav-link active">Overview</a></li>
+                {% if subscription %}<li class="nav-item"><a href="#myplan" class="nav-link">My Plan</a></li>{% endif %}
+                <li class="nav-item"><a href="#tracking" class="nav-link">Tracking</a></li>
+                <li class="nav-item"><a href="#wallet" class="nav-link">Wallet</a></li>
+                <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link text-danger">Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Mobile Sidebar -->
+        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="mobileSidebarLabel">Dashboard</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="nav flex-column" id="mobile-menu">
+                    <li class="nav-item"><a href="#overview" class="nav-link active" data-bs-dismiss="offcanvas">Overview</a></li>
+                    {% if subscription %}<li class="nav-item"><a href="#myplan" class="nav-link" data-bs-dismiss="offcanvas">My Plan</a></li>{% endif %}
+                    <li class="nav-item"><a href="#tracking" class="nav-link" data-bs-dismiss="offcanvas">Tracking</a></li>
+                    <li class="nav-item"><a href="#wallet" class="nav-link" data-bs-dismiss="offcanvas">Wallet</a></li>
+                    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link text-danger">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar Toggle Button -->
+        <button class="btn btn-dark d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+
+        <!-- Main Content -->
+        <div class="side-content col-md-9 col-lg-10" data-bs-spy="scroll" data-bs-target="#sidebar-menu" data-bs-offset="50" class="scrollspy-example" tabindex="0">
+            <div class="container py-4">
+                <!-- Welcome Section -->
+                <div class="mb-4" id="overview" class="p-5">
+                    <h2 class="fw-bold">Welcome, {{ user.username }}!</h2>
+                    <p>Here’s an overview of your account.</p>
+                </div>
+                {% if show_renew_message %}
+                    <div class="alert alert-danger text-center shadow-lg border-0 p-4 rounded-3" data-aos="fade-up">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fa-solid fa-ban me-2"></i>
+                            Your subscription has ended.
+                        </h5>
+                        <p class="mb-3">Please renew your subscription to continue enjoying our service.</p>
+                        <a href="{% url 'home' %}" class="btn btn-dark fw-bold px-4 py-2 rounded-pill">
+                            <i class="fa-solid fa-shopping-cart me-2"></i> Renew Now
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if subscription %}
+                <!-- Selected Plan Section -->
+                <div class="card mb-4 shadow-lg border-0" data-aos="fade-up" id="myplan" class="p-5">
+                    <div class="card-header text-center bg-dark text-white">
+                        <h4 class="fw-bold">Your Plan</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-check fa-2x me-3 "></i>
+                            <div>
+                                <p class="mb-1"><strong>Plan Name:</strong></p>
+                                <p >{{ subscription.plan.name }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-tint fa-2x me-3 "></i>
+                            <div>
+                                <p class="mb-1"><strong>Quantity:</strong></p>
+                                <p >{{ subscription.plan.milk_quantity_per_day }} liters/day</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa-solid fa-hourglass-half fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Duration:</strong></p>
+                                <p >28 Days</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Start Date:</strong></p>
+                                <p >{{ subscription.start_date|date:"d-m-Y" }}</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-calendar-alt fa-2x me-3"></i>
+                            <div>
+                                <p class="mb-1"><strong>Expiry Date:</strong></p>
+                                <p >{{ subscription.end_date }}</p>
+                            </div>
+                        </div>
+
+                        {% if expiry_message %}
+                            <div class="alert alert-warning text-center shadow-lg border-0 p-4 rounded-3" data-aos="fade-up">
+                                <h5 class="fw-bold mb-2">
+                                    <i class="fa-solid fa-exclamation-triangle me-2"></i>
+                                    {{ expiry_message }}
+                                </h5>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% endif %}
+                
+            <!-- Wallet Section -->
+            <div class="card mb-4 shadow-lg border-0" data-aos="fade-up" id="wallet" class="p-5">
+                <div class="card-header text-center bg-dark">
+                    <h4 class="fw-bold text-white">Wallet</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p class="mb-3 fs-5">
+                        <i class="fa-solid fa-wallet fa-2x me-2"></i>
+                        <strong>Current Balance:</strong>
+                        <span class="wallet-balance">{{ user.balance }}</span>
+                    </p>
+                
+                </div>
+            </div>
+            
+               <!-- Tracking Section -->
+               {% if subscription %}
+                    <div class="card mb-4 shadow-lg border-0" data-aos="fade-up" id="tracking" class="p-5">
+                        <div class="card-header text-center bg-dark text-white">
+                            <h4 class="fw-bold">Delivery Tracking</h4>
+                        </div>
+                        <div class="card-body text-center">
+                            <a href="{% url 'subscription_track' %}" class="btn track-btn btn fw-bold" data-aos="fade-up"> Track Delivery</a>
+                        </div>
+                    </div>
+                {% endif %}
+
+               
+
+
+                    <!-- Order Tracking Section -->
+                    <div class="card mb-4 shadow-lg border-0" data-aos="fade-up" id="tracking" class="p-5">
+                        <div class="card-header text-center bg-dark text-white">
+                            <h4 class="fw-bold">Order Tracking</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-1"><strong>Order ID:</strong> </p>
+                                        <p class="mb-1"><strong>Product:</strong> </p>
+                                        <p><strong>Status:</strong> </p>
+                                    </div>
+                                    <button class="btn btn-outline-danger cancel-btn" >Cancel</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <!-- Confirmation Modal -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Confirm Action</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to cancel this order?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                    <button type="button" class="btn btn-danger confirm-cancel-btn">Yes, Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success Modal -->
+                    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Order canceled successfully.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success success-btn" data-bs-dismiss="modal">OK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+              
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        new bootstrap.ScrollSpy(document.body, {
+            target: "#sidebar-menu",
+            offset: 50,
+        });
+    
+        new bootstrap.ScrollSpy(document.body, {
+            target: "#mobile-menu",
+            offset: 50,
+        });
+    
+        // Smooth Scrolling for Mobile Sidebar
+        document.querySelectorAll("#mobile-menu a").forEach(anchor => {
+            anchor.addEventListener("click", function (e) {
+                let target = document.querySelector(this.getAttribute("href"));
+                if (target) {
+                    e.preventDefault();
+                    let yOffset = -50; // Offset for better alignment
+                    let y = target.getBoundingClientRect().top + window.scrollY + yOffset;
+                    window.scrollTo({ top: y, behavior: "smooth" });
+    
+                    // Close the mobile menu after clicking a link
+                    let offcanvasElement = document.querySelector("#mobileSidebar");
+                    let offcanvas = bootstrap.Offcanvas.getInstance(offcanvasElement);
+                    if (offcanvas) offcanvas.hide();
+                }
+            });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        // Fetch user orders
+        fetch('/authentication/get-user-orders/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            const orderList = document.querySelector('.list-group');
+            orderList.innerHTML = ''; // Clear the previous list of orders
+    
+            if (data.success && data.orders.length > 0) {
+                data.orders.forEach(order => {
+                    let statusIcon;
+                    switch (order.status.toLowerCase()) {
+                        case 'pending':
+                            statusIcon = '<i class="bi bi-hourglass-split text-warning"></i>'; // Bootstrap hourglass icon
+                            break;
+                        case 'shipping':
+                            statusIcon = '<i class="bi bi-truck text-primary"></i>'; // Bootstrap truck icon
+                            break;
+                        case 'completed':
+                            statusIcon = '<i class="bi bi-check-circle text-success"></i>'; // Bootstrap check icon
+                            break;
+                        case 'canceled':
+                            statusIcon = '<i class="bi bi-x-circle text-danger"></i>'; // Bootstrap cancel icon
+                            break;
+                        default:
+                            statusIcon = '<i class="bi bi-info-circle text-muted"></i>'; // Default info icon
+                    }
+                    const orderItem = `
+                        <li class="list-group-item d-flex justify-content-between align-items-center order-item" data-order-id="${order.id}">
+                            <div>
+                                <p class="mb-1"><strong>Order ID:</strong> ${order.id}</p>
+                                <p class="mb-1"><strong>Product:</strong> ${order.product_name}</p>
+                                 <p><strong>Status:</strong> <span class="order-status">${statusIcon} ${order.status}</span></p>
+                            </div>
+                            ${order.status === 'Pending' ? `
+                                <button class="btn btn-outline-danger cancel-btn" data-order-id="${order.id}">
+                                    Cancel
+                                </button>` : ''
+                            }
+                        </li>
+                    `;
+                    orderList.insertAdjacentHTML('beforeend', orderItem);
+    
+                    // Open WebSocket connection for each order
+                    const socket = new WebSocket('ws://' + window.location.host + `/ws/orders/${order.id}/`);
+    
+                    // WebSocket event listeners
+                    socket.onopen = function(event) {
+                        console.log(`WebSocket connection established for order ${order.id}`);
+                    };
+    
+                    socket.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        const orderId = data.order_id;
+                        const status = data.status;
+                    
+                        // Find the corresponding order and update its status
+                        const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
+                        if (orderItem) {
+                            const statusElement = orderItem.querySelector('.order-status');
+                    
+                            // Determine the new status icon
+                            let statusIcon;
+                            switch (status.toLowerCase()) {
+                                case 'pending':
+                                    statusIcon = '<i class="bi bi-hourglass-split text-warning"></i>';
+                                    break;
+                                case 'shipping':
+                                    statusIcon = '<i class="bi bi-truck text-primary"></i>';
+                                    break;
+                                case 'completed':
+                                    statusIcon = '<i class="bi bi-check-circle text-success"></i>';
+                                    break;
+                                case 'canceled':
+                                    statusIcon = '<i class="bi bi-x-circle text-danger"></i>';
+                                    break;
+                                default:
+                                    statusIcon = '<i class="bi bi-info-circle text-muted"></i>';
+                            }
+                    
+                            // Update the inner HTML of the status element
+                            statusElement.innerHTML = `${statusIcon} ${status}`;
+                    
+                            // Hide the cancel button if the status is no longer 'Pending'
+                            const cancelButton = orderItem.querySelector('.cancel-btn');
+                            if (cancelButton && status.toLowerCase() !== 'pending') {
+                                cancelButton.remove();
+                            }
+                        }
+                    };
+                    
+    
+                    socket.onclose = function(event) {
+                        console.log(`WebSocket connection closed for order ${order.id}`);
+                    };
+    
+                    socket.onerror = function(error) {
+                        console.error(`WebSocket Error for order ${order.id}:`, error);
+                    };
+                });
+            } else {
+                orderList.innerHTML = '<p class="text-center text-muted">You have no recent orders to track.</p>';
+            }
+        })
+        .catch(error => console.error('Error fetching orders:', error));
+    
+        // Cancel order logic
+        document.addEventListener('click', (event) => {
+            if (event.target.classList.contains('cancel-btn')) {
+                const orderId = event.target.dataset.orderId;
+        
+                // Show confirmation modal
+                const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                confirmationModal.show();
+        
+                // Handle confirmation button click
+                document.querySelector('.confirm-cancel-btn').onclick = () => {
+                    fetch(`/authentication/cancel-order/${orderId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            confirmationModal.hide();
+        
+                            if (data.success) {
+                                // Show success modal
+                                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                                successModal.show();
+
+                                // Update the order status
+                                const orderItem = document.querySelector(`.order-item[data-order-id="${orderId}"]`);
+                                const statusElement = orderItem.querySelector('.order-status');
+                                statusElement.textContent = 'Canceled';
+        
+                                // Remove the cancel button
+                                const cancelButton = orderItem.querySelector('.cancel-btn');
+                                cancelButton.remove();
+        
+                                
+                                
+        
+                                // Optionally, update the wallet balance dynamically
+                                if (data.wallet_balance) {
+                                    document.querySelector('.wallet-balance').textContent = data.wallet_balance;
+                                    
+                                }
+                                
+                            } else {
+                                alert(data.message || 'Failed to cancel order.');
+                            }
+                        })
+                        .catch(error => console.error('Error canceling order:', error));
+                };
+            }
+        });
+        
+    });
+
+       
+</script>
+    
+{% endblock scripts %}

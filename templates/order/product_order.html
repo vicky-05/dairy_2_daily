@@ -1,0 +1,347 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Order | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<style>
+    .order-container {
+        margin-top: 10px;
+        max-width: 1000px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .row {
+        display: flex;
+        height: 100%;
+        margin: 0;
+    }
+
+    .left-section,
+    .right-section {
+        padding: 40px 30px;
+    }
+
+    .left-section {
+        background: #000;
+        color: #fff;
+        border-radius: 8px 0 0 8px;
+        flex: 1;
+    }
+
+    .left-section h2 {
+        font-weight: bold;
+    }
+
+    .right-section {
+        background: #fff;
+        flex: 1;
+        border-left: 1px solid #ddd;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #000;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #333;
+    }
+
+    .form-control {
+        border-radius: 6px;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+        .row {
+            flex-direction: column;
+        }
+
+        .left-section,
+        .right-section {
+            padding: 20px;
+            border-left: none;
+        }
+    }
+    .order-container input, select, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .order-container input[type="text"]#card-number, input[type="text"]#expiry-date, input[type="password"]#cvv, input[type="text"]#amount, input[type="text"]#wallet {
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 16px;
+        padding: 10px;
+        width: 250px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        letter-spacing: 2px;
+    }
+    .order-container input[type="text"]#card-number::placeholder {
+        color: #aaa;
+        font-size: 14px;
+    }
+    .order-container textarea {
+        width: 100%;
+        resize: none;
+    }
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="container order-container">
+    <div class="row">
+        <!-- Left Section: Shipping Details -->
+        <div class="left-section">
+            <h2>Shipping Details</h2>
+            <p class="mb-4">Enter your shipping information below.</p>
+            <form id="shippingForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="pincode" class="form-label">Pincode</label>
+                    <select id="pincode" name="pincode" required>
+                        <option value="" disabled selected>Select Pincode</option>
+                        {% for pin in pincodes %}
+                        <option value="{{ pin.pincode }}">{{ pin.pincode }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="error-message" id="pincodeError"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <select id="area" name="area" required>
+                        <option value="" disabled selected>Select Area</option>
+                    </select>
+                    <div class="error-message" id="areaError"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Full Address</label>
+                    <textarea class="form-control" id="address" rows="3" placeholder="Enter your address" required></textarea>
+                    <div class="error-message" id="addressError"></div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Section: Payment Details -->
+        <div class="right-section">
+            <h2>Payment Details</h2>
+            <p class="mb-4">Enter your payment information below.</p>
+            <form id="paymentForm">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="card-number" class="form-label">Card Number</label>
+                    <input 
+                        type="text" 
+                        id="card-number" 
+                        name="card-number" 
+                        maxlength="19" 
+                        placeholder="**** **** **** ****" 
+                        required>
+                    <div class="error-message" id="cardNumberError"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="expiry-date" class="form-label">Expiry Date</label>
+                    <input type="month" class="form-control" id="expiry-date" required>
+                    <div class="error-message" id="expiryDateError"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="cvv" class="form-label">CVV</label>
+                    <input type="password" class="form-control" id="cvv" maxlength="3" placeholder="***" required>
+                    <div class="error-message" id="cvvError"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="text" class="form-control" id="amount" value="{{ amount }}" readonly> 
+                </div>
+                
+                {% if user_wallet > 0 %}
+                <div class="mb-3">
+                    <label for="wallet" class="form-label">Your Wallet</label>
+                    <input type="text" class="form-control" id="wallet" value="{{ user_wallet }}" readonly>
+                
+                    <button type="button" class="btn btn-primary w-100 mt-2" onclick="useWallet()" id="add-btn">Add</button>
+                
+                    <p id="remaining-text" class="mt-2 text-danger" style="display: none;"></p>
+                
+                        <input type="hidden" name="final_amount" id="final_amount">
+                </div>
+                {% else %}
+                <input id="wallet" type="text" value="{{ user_wallet }}" readonly>
+                <p class="text-danger">You have no money in your wallet.</p>
+
+                {% endif %}
+                
+            </form>
+            <button type="button" class="btn btn-primary w-100 mt-4" onclick="validateForm()">Submit</button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    // Card number formatting
+    const cardNumberInput = document.getElementById("card-number");
+    cardNumberInput.addEventListener("input", (e) => {
+        let input = e.target.value.replace(/\D/g, "");
+        input = input.match(/.{1,4}/g)?.join(" ") || "";
+        e.target.value = input;
+    });
+
+    // Fetch areas based on selected pincode
+    document.addEventListener("DOMContentLoaded", () => {
+        const pincodeDropdown = document.getElementById("pincode");
+        const areaDropdown = document.getElementById("area");
+    
+        pincodeDropdown.addEventListener("change", () => {
+            const selectedPincode = pincodeDropdown.value;
+    
+            // Reset Area Dropdown
+            areaDropdown.innerHTML = '<option value="" disabled selected>Select Area</option>';
+    
+            if (selectedPincode) {
+              fetch(`/orders/get-areas/${selectedPincode}/`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        data.areas.forEach((item) => {
+                            const option = document.createElement("option");
+                            option.value = item.area;
+                            option.textContent = item.area;
+                            areaDropdown.appendChild(option);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching areas:", error);
+                    });
+            }
+        });
+    });
+    
+
+    // Form Validation Function
+    function validateForm() {
+        let isValid = true;
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        // Shipping Form Validation
+        const pincode = document.getElementById('pincode');
+        const area = document.getElementById('area');
+        const address = document.getElementById('address');
+
+        if (!pincode.value.trim()) {
+            document.getElementById('pincodeError').textContent = "Pincode is required.";
+            isValid = false;
+        }
+        if (!area.value.trim()) {
+            document.getElementById('areaError').textContent = "Area is required.";
+            isValid = false;
+        }
+        if (!address.value.trim()) {
+            document.getElementById('addressError').textContent = "Address is required.";
+            isValid = false;
+        }
+
+        // Payment Form Validation
+        const cardNumber = document.getElementById('card-number');
+        const expiryDate = document.getElementById('expiry-date');
+        const cvv = document.getElementById('cvv');
+
+        if (!cardNumber.value.trim() || cardNumber.value.length !== 19) {
+            document.getElementById('cardNumberError').textContent = "Enter a valid card number.";
+            isValid = false;
+        }
+        if (!expiryDate.value.trim()) {
+            document.getElementById('expiryDateError').textContent = "Expiry date is required.";
+            isValid = false;
+        }
+        if (!cvv.value.trim() || cvv.value.length !== 3) {
+            document.getElementById('cvvError').textContent = "Enter a valid CVV.";
+            isValid = false;
+        }
+
+        // Show success message if all validations pass
+        if (isValid) {
+            submitOrder();
+        }
+    }
+
+    function submitOrder() {
+        const shippingForm = document.getElementById('shippingForm');
+        const paymentForm = document.getElementById('paymentForm');
+        const slug = "{{ product.slug }}"; // Embed the slug in a JavaScript variable
+        const amount = parseFloat(document.getElementById('amount').value);  // Get the total amount
+        const walletBalance = parseFloat(document.getElementById('wallet').value);  // Get current wallet balance
+        const remainingBalance = walletBalance;  // Calculate the remaining balance after purchase
+        const data = {
+            pincode: shippingForm.pincode.value,
+            area: shippingForm.area.value,
+            address: shippingForm.address.value,
+            card_number: paymentForm['card-number'].value.replace(/\s+/g, ''),
+            expiry_date: paymentForm['expiry-date'].value,
+            cvv: paymentForm.cvv.value,
+            amount: document.getElementById('amount').value,
+            remaining_balance: remainingBalance
+        };
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+        fetch(`/orders/create-order/${slug}/`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                window.location.href = `/orders/order-success/${result.order_id}/`;
+            } else {
+                alert(result.message || 'An error occurred.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    function useWallet() {
+        let amount = parseFloat(document.getElementById("amount").value);
+        let walletBalance = parseFloat(document.getElementById("wallet").value);
+        let remainingText = document.getElementById("remaining-text");
+        let walletForm = document.getElementById("wallet-form");
+        let finalAmountInput = document.getElementById("final_amount");
+        let addBtn = document.getElementById("add-btn");
+
+        if (walletBalance >= amount) {
+            let remainingBalance = walletBalance - amount;
+            document.getElementById("wallet").value = remainingBalance.toFixed(2);
+            remainingText.style.display = "none";
+            finalAmountInput.value = remainingBalance;
+        } else {
+            let remainingRequired = amount - walletBalance;
+            remainingText.innerHTML = `Insufficient balance! You need ₹${remainingRequired.toFixed(2)} more.`;
+            remainingText.style.display = "block";
+            return;  // Stop execution if not enough balance
+        }
+        addBtn.style = "display:none";
+    }
+    
+</script>
+{% endblock scripts %}

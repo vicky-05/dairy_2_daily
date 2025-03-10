@@ -1,0 +1,112 @@
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        .login-box {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+            animation: slide-in 0.6s ease-out;
+        }
+        .login-box h2 {
+            font-weight: 700;
+            font-size: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #000000;
+        }
+        .login-box .form-control {
+            border: 2px solid #000000;
+            border-radius: 8px;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .login-box .form-control:focus {
+            border-color: #000000;
+            box-shadow: none;
+        }
+        .login-box .btn-login {
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        .btn-login:hover {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+        }
+        .login-box .forgot-password {
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #000000;
+            margin-top: 15px;
+            text-decoration: none;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .login-box .divider {
+            position: relative;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            height: 1px;
+            background: #000000;
+            top: 50%;
+            width: 45%;
+        }
+        .divider::before {
+            left: 0;
+        }
+        .divider::after {
+            right: 0;
+        }
+        .divider span {
+            font-size: 0.9rem;
+            color: #000000;
+            padding: 0 10px;
+            background: #ffffff;
+        }
+        .login-box .signup-link {
+            display: block;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #000000;
+            margin-top: 15px;
+        }
+        .signup-link a {
+            color: #000000;
+            text-decoration: none;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }

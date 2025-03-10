@@ -1,0 +1,970 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} Home Page | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+    .navbar {
+        background-color: var(--nav-color);
+    } 
+    .icon-container:hover i {
+        animation: bounce 0.5s ease; /* Replace 'bounce' with the desired animation */
+    }
+    /* Payment Process Section */
+.payment-process {
+    background-color:var(--bg-color);
+}
+
+.process-step {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.process-step:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.icon-container {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color:  #fff;
+    margin: 0 auto;
+}
+
+.step-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.process-step p {
+    font-size: 14px;
+    color: #666;
+}
+
+.payment-process .icon-container i {
+    color: #007bff;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .process-step {
+        padding: 15px;
+    }
+
+    .step-title {
+        font-size: 16px;
+    }
+
+    .process-step p {
+        font-size: 12px;
+    }
+}
+.hero {
+    background: url("static/images/dairy-cows.jpg") no-repeat center / cover;
+    color: white;
+    position: relative;
+    padding: 5rem 0;
+}
+
+.hero .overlay {
+    background-color: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+/* Blog Section Background and Typography */
+.blog {
+    background-color: #333333;
+    color: #fff;
+}
+
+/* Blog Cards */
+.blog-card {
+    border: 2px solid #fff;
+    padding: 15px;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.blog-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Blog Images */
+.blog-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0.9;
+}
+.blog-card:hover .blog-img {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+/* Blog Headings */
+.blog-card h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: color 0.3s ease;
+}
+.blog-card:hover h5 {
+    color: #ccc;
+}
+
+/* Buttons */
+.btn-outline-light {
+    border-color: #fff;
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Add Animation to Blog Cards */
+.blog-card {
+    animation: slideIn 1s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .blog-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Read More Button Styling */
+.btn-read-more {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+    border: 2px solid #fff;
+    background: none;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Hover Effect */
+.btn-read-more:hover {
+    color: #000;
+    background: #fff;
+    border-color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Inner Overlay Effect */
+.btn-read-more::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 300%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    z-index: -1;
+}
+
+.btn-read-more:hover::before {
+    left: 0;
+}
+
+.accordion-button:not(.collapsed) {
+    color: black; /* White text for active */
+}
+/* Contact Us Section */
+.contact-us h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.contact-us .form-floating label {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.contact-us .form-floating input, 
+.contact-us .form-floating textarea {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    padding: 10px 15px;
+}
+
+.contact-us .form-floating input:focus, 
+.contact-us .form-floating textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+.contact-us .btn-primary {
+    background-color:black;
+    font-weight: bold;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.contact-us .btn-primary:hover {
+    background-color: rgb(70, 68, 68);
+    transform: translateY(-3px);
+    font-weight:bold;
+    box-shadow: 0 5px 15px rgba(0, 91, 187, 0.4);
+}
+
+@media (max-width: 768px) {
+    .contact-us h2 {
+        font-size: 2rem;
+    }
+
+    .contact-us .form-floating input, 
+    .contact-us .form-floating textarea {
+        font-size: 0.9rem;
+    }
+
+    .contact-us .btn-primary {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+.product-box p {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit description to 3 lines */
+    -webkit-box-orient: vertical;
+    line-clamp: 3; /* Standard property, not supported in all browsers */
+}
+
+.products .row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.products .col-md-4 {
+    display: flex;
+}
+
+#chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    text-align: right;
+    z-index: 1000;
+}
+
+#chatbot-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+#chatbot-btn:hover {
+    transform: scale(1.1);
+}
+
+#chatbox {
+    z-index: 9999;
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 320px;
+    height: 450px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    display: none;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+#chatbox.active {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.chat-header {
+    background: black;
+    color: white;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    border-radius: 15px 15px 0 0;
+}
+
+.chat-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.messages {
+    height: 330px;
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 6px;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.bot-message {
+    justify-content: flex-start;
+}
+
+.message p {
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 75%;
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+.user-message p {
+    background: black;
+    color: white;
+    text-align: right;
+}
+
+.bot-message p {
+    background: #f1f1f1;
+    color: black;
+}
+
+.typing {
+    font-style: italic;
+    color: gray;
+    font-size: 12px;
+    margin-left: 10px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.input-box {
+    display: flex;
+    padding: 10px;
+}
+
+.input-box input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.input-box button {
+    padding: 8px 15px;
+    border: none;
+    background: black;
+    color: white;
+    cursor: pointer;
+    border-radius: 20px;
+    margin-left: 5px;
+}
+
+/* Full-Screen Overlay */
+#tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: rgba(223, 222, 222, 0.5); /* Dark overlay */
+    z-index: 998;
+}
+
+/* Tutorial Popup */
+#tutorial-popup {
+    position: fixed;
+    top: 35%;
+    left: 83%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    padding: 20px;
+    z-index: 999;
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -55%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.tutorial-content {
+    position: relative;
+    text-align: center;
+}
+
+/* Arrow pointing to chatbot */
+.tutorial-content::after {
+    content: "";
+    position: absolute;
+    bottom: -170px;
+    left: 40%;
+    width: 200px;
+    height: 140px;
+    background-image: url('{% static "images/arrow.png" %}'); /* Add arrow image */
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: rotate(20deg);
+}
+
+/* Close Button */
+.close-tutorial {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #888;
+    background: #f8f8f8;
+    border-radius: 50%;
+    width: 28px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    border: 1px solid #ccc;
+}
+
+.close-tutorial:hover {
+    color: #000;
+    background: #e6e6e6;
+    border-color: #aaa;
+}
+
+/* Tooltip for Close Button */
+.close-tutorial::after {
+    content: "Close Tutorial";
+    position: absolute;
+    top: -20px;
+    right: -10px;
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s;
+}
+
+.close-tutorial:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+</style>
+{% endblock styles %}
+
+{% block content %}
+{% include 'inc/toast.html' %}
+<!-- Chatbot Widget -->
+<div id="chatbot-container" style="position: fixed; bottom: 20px; right: 20px; display: flex; align-items: center; z-index: 1000;">
+    <button id="chatbot-btn">
+        <img src="{% static 'images/chatbot2.png' %}" alt="Chat with DairyBot" style="width: 90px; height: 90px; padding: 5px; background-color: white; border-radius: 50%;">
+    </button>
+</div>
+
+<!-- Background Overlay -->
+<div id="tutorial-overlay"></div>
+
+<!-- Tutorial Popup -->
+<div id="tutorial-popup" class="tutorial-popup">
+    <div class="tutorial-content">
+        <span class="close-tutorial">&#10006;</span>
+        <h2>Welcome to D2D Bot!</h2>
+        <p>Click the D2D Chatbot button to start a conversation with our chatbot.Ask me anything about our milk, dairy products, or services!"</p>
+    </div>
+</div>
+
+<!-- Chatbox -->
+<div id="chatbox">
+    <div class="chat-header">
+        <img src="{% static 'images/chatbot2.png' %}" alt="Chat with DairyBot" style="width: 40px; height: 40px; background-color: white; border-radius: 50%;">
+        <span>D2D Bot - Ask Anything</span>
+        <button id="close-chat">✖</button>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="input-box">
+        <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKeyPress(event)">
+        <button id="send-btn">Send</button>
+    </div>
+</div>
+
+
+<!-- Slider -->
+{% include 'inc/slider.html' %}
+
+    <!-- Why Choose Us Section -->    
+    <section class="why-choose-us py-5" data-aos="fade-up" data-aos-duration="1000">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up" data-aos-delay="100">Why Choose Us?</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-box p-4 border rounded shadow-sm">
+                        <i class="bi bi-droplet icon-feature icon-hover mb-3" data-aos="fade-up" data-aos-delay="200" style="font-size: 3rem;"></i>
+                        <h4>Fresh & Pure</h4>
+                        <p class="flex-grow-1">We deliver unprocessed milk directly from our farm, ensuring purity and quality.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-box p-4 border rounded shadow-sm">
+                        <div class="feature-icon">
+                            <i class="bi bi-truck icon-feature fa-3x mb-3" style="font-size: 3rem;" data-aos="fade-up" data-aos-delay="300"></i>
+                        </div>
+                        <h4>Daily Delivery</h4>
+                        <p class="flex-grow-1">Milk delivered to your doorstep every morning and evening, always on time.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-box p-4 border rounded shadow-sm">
+                        <i class="bi bi-people icon-feature icon-hover mb-3" style="font-size: 3rem;" data-aos="fade-up" data-aos-delay="400"></i>
+                        <h4>Trusted by Families</h4>
+                        <p>Serving healthy milk to families for generations with a smile.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products py-5">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up" data-aos-duration="1000">Our By-Products</h2>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <a href="{% url 'product_detail' product.slug %}" class="text-decoration-none text-reset">
+                        <div class="product-box p-3">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm product-image">
+                            <h4 class="mt-3">{{ product.name }}</h4>
+                            <p>{{ product.description }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+<section class="testimonials py-5">
+    <div class="container text-center">
+        <h2 class="mb-4" data-aos="fade-up" data-aos-duration="1000">What Our Customers Say</h2>
+        <div class="testimonial-container">
+            {% for review in reviews %}
+                <div class="testimonial-item" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:100 }}" data-aos-duration="1000">
+                    <!-- Display user profile image or fallback to a default if none exists -->
+                    <img src="{{ review.user.profile_picture.url }}" 
+                         alt="{{ review.user.username }}" class="testimonial-avatar" loading="lazy">
+                    <blockquote class="blockquote">
+                        <p>"{{ review.feedback }}"</p>
+                        <footer class="blockquote-footer">{{ review.user.username }}</footer>
+                    </blockquote>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+    {% if not user_subscription %}
+    <!-- Subscriptions Section -->
+    {% include 'inc/subscriptions.html' %}
+    {% endif %}
+
+    <section class="hero position-relative text-center py-5" data-aos="fade-up" data-aos-duration="1500">
+        <div class="overlay"></div>
+        <div class="container position-relative" data-aos="fade-up" data-aos-delay="200">
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-up" data-aos-delay="300">Fresh Milk, Delivered Daily</h1>
+            <p class="lead mb-4" data-aos="fade-up" data-aos-delay="400">From our farm to your doorstep. 100% pure and natural.</p>
+            <a href="{% url 'product_collection' %}" class="btn btn-light btn-lg px-4 py-2 rounded-pill shadow-sm animate__animated animate__pulse" data-aos="fade-up" data-aos-delay="500">Explore Our Products <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <!-- Payment Process Section -->
+    <section class="payment-process py-5" data-aos="fade-up" data-aos-duration="1500">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up" data-aos-delay="200">Easy Payment Process</h2>
+            <div class="row gy-4">
+                <!-- Step 1 -->
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="process-step">
+                        <div class="icon-container mb-3">
+                            <i class="fas fa-shopping-cart fa-3x text-dark" data-aos="fade-up" data-aos-delay="300"></i>
+                        </div>
+                        <h5 class="step-title">Choose Plan</h5>
+                        <p>Select the subscription plan that fits your needs.</p>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="process-step">
+                        <div class="icon-container mb-3">
+                            <i class="fas fa-cart-plus fa-3x text-dark" data-aos="fade-up" data-aos-delay="400"></i>
+                        </div>
+                        <h5 class="step-title">Add to Cart</h5>
+                        <p>Add your selected plan or products to the cart.</p>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="process-step">
+                        <div class="icon-container mb-3">
+                            <i class="fas fa-lock fa-3x text-dark" data-aos="fade-up" data-aos-delay="500"></i>
+                        </div>
+                        <h5 class="step-title">Secure Payment</h5>
+                        <p>Pay securely with our trusted payment gateway.</p>
+                    </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="col-md-3 col-sm-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="process-step">
+                        <div class="icon-container mb-3">
+                            <i class="fas fa-check-circle fa-3x text-dark" data-aos="fade-up" data-aos-delay="600"></i>
+                        </div>
+                        <h5 class="step-title">Order Confirmed</h5>
+                        <p>Get your order confirmation instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog py-5" data-aos="fade-up" data-aos-duration="1500">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up" data-aos-delay="200">From Our Blog</h2>
+            <div class="row gy-4">
+                <!-- Blog 1 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <img src="{% static 'images/organic.jpg' %}" class="img-fluid rounded blog-img"   alt="Blog 1">
+                    <h5 class="mt-3">Benefits of Organic Milk</h5>
+                    <a href="{% url 'organic_milk' %}" class="btn btn-read-more mt-2">Read More</a>
+                </div>
+                <!-- Blog 2 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <img src="{% static 'images/From Farm to Table.jpg' %}" class="img-fluid rounded blog-img" alt="Blog 2">
+                    <h5 class="mt-3">The Journey of Milk: From Farm to Table</h5>
+                    <a href="{% url 'journey_milk' %}" class="btn btn-read-more mt-2">Read More</a>
+                </div>
+                <!-- Blog 3 -->
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                    <img src="{% static 'images/organic-milk-Organic-Boosting1.jpg' %}" class="img-fluid rounded blog-img" alt="Blog 3">
+                    <h5 class="mt-3">Why Fresh Milk is Best</h5>
+                    <a href="{% url 'fresh_milk' %}" class="btn btn-read-more mt-2">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section class="contact-us py-5" data-aos="fade-up" data-aos-duration="1500">
+        <div class="container text-center">
+            <h2 class="mb-4" data-aos="fade-up" data-aos-delay="200">Contact Us</h2>
+            <p class="text-muted mb-4" data-aos="fade-up" data-aos-delay="300">
+                We'd love to hear from you! Please fill out the form below, and we'll get back to you as soon as possible.
+            </p>
+            <form id="contactForm" action="{% url 'contact' %}" method="POST" class="contact-form" data-aos="fade-up" data-aos-delay="400">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <!-- Name Field -->
+                    <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+                        <div class="form-floating">
+                            <input type="text" class="form-control shadow-sm border" id="name" name="name" placeholder="Your Name">
+                            <label for="name">Your Name</label>
+                            <small class="text-danger d-none" id="nameError">Please enter at least 3 characters.</small>
+                        </div>
+                    </div>
+                    <!-- Email Field -->
+                    <div class="col-md-6" data-aos="fade-up" data-aos-delay="600">
+                        <div class="form-floating">
+                            <input type="email" class="form-control shadow-sm border" id="email" name="email" placeholder="Your Email">
+                            <label for="email">Your Email</label>
+                            <small class="text-danger d-none" id="emailError">Please enter a valid email.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-floating mt-4" data-aos="fade-up" data-aos-delay="700">
+                    <!-- Message Field -->
+                    <textarea class="form-control shadow-sm border" id="message" name="message" placeholder="Your Message" rows="4" style="height: 150px;"></textarea>
+                    <label for="message">Your Message</label>
+                    <small class="text-danger d-none" id="messageError">Message must be at least 10 characters.</small>
+                </div>
+                <button type="submit" class="btn btn-primary mt-4 px-5 py-2 rounded-pill shadow-sm" data-aos="fade-up" data-aos-delay="600">
+                    Send Message
+                </button>
+            </form>
+            <div id="successMessage" class="alert alert-success mt-3 d-none">Your message has been sent successfully!</div>
+        </div>
+    </section>
+
+
+
+    <!-- FAQ Section -->
+    <section class="faq py-5" data-aos="fade-up" data-aos-duration="1500">
+        <div class="container">
+            <h2 class="text-center mb-4" data-aos="fade-up" data-aos-delay="200">Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                <!-- Accordion Item 1 -->
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="300">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button bg-light shadow-sm fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            Is your milk organic?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            Yes, all our milk is 100% organic and free from harmful chemicals.
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion Item 2 -->
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="400">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed bg-light shadow-sm fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            How do you ensure freshness?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            We deliver milk within hours of milking, ensuring optimal freshness.
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion Item 3 -->
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="500">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed bg-light shadow-sm fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            Do you deliver every day?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            Yes, we deliver twice a day, in the morning and evening, to ensure you always have fresh milk.
+                        </div>
+                    </div>
+                </div>
+                <!-- Accordion Item 4 -->
+                <div class="accordion-item" data-aos="fade-up" data-aos-delay="600">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed bg-light shadow-sm fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            What areas do you cover for delivery?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            We currently deliver within a 50 km radius around our farm in the city.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+{% endblock content %}
+{% block scripts %}
+<script src="{% static 'js/chatbot.js' %}"></script>
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        let tutorialPopup = document.getElementById("tutorial-popup");
+        let tutorialOverlay = document.getElementById("tutorial-overlay");
+        let closeTutorial = document.querySelector(".close-tutorial");
+        let chatBtn = document.getElementById("chatbot-btn");
+        let chatbox = document.getElementById("chatbox");
+        let closeChat = document.getElementById("close-chat");
+        let sendBtn = document.getElementById("send-btn");
+        let messagesBox = document.getElementById("messages");
+        
+        // Check if it's the user's first visit
+        if (!localStorage.getItem("firstVisit")) {
+            tutorialPopup.style.display = "block";
+            tutorialOverlay.style.display = "block";
+            localStorage.setItem("firstVisit", "true");
+        }
+
+        // Close tutorial popup
+        closeTutorial.addEventListener("click", function () {
+            tutorialPopup.style.display = "none";
+            tutorialOverlay.style.display = "none";
+        });
+    
+        // Open chatbox
+        chatBtn.addEventListener("click", function () {
+            chatbox.classList.toggle("active");
+        });
+    
+        // Close chatbox
+        closeChat.addEventListener("click", function () {
+            chatbox.classList.remove("active");
+        });
+    
+        // Send message functionality
+        sendBtn.addEventListener("click", sendMessage);
+        document.getElementById("user-input").addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        });
+    
+        function sendMessage() {
+            let userInput = document.getElementById("user-input");
+            let userMessage = userInput.value.trim();
+            if (!userMessage) return;
+    
+            // Display user message
+            messagesBox.innerHTML += `<div class="message user-message"><p>${userMessage}</p></div>`;
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+    
+            // Show typing indicator
+            let typingIndicator = document.createElement("div");
+            typingIndicator.classList.add("message", "bot-message");
+            typingIndicator.innerHTML = `<p class="typing">D2D Bot is typing...</p>`;
+            messagesBox.appendChild(typingIndicator);
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+    
+            // Simulate bot response delay
+            setTimeout(() => {
+                fetch(`/chatbot/get-response/?message=${encodeURIComponent(userMessage)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        messagesBox.removeChild(typingIndicator);
+                        messagesBox.innerHTML += `<div class="message bot-message"><p>${data.response}</p></div>`;
+                        messagesBox.scrollTop = messagesBox.scrollHeight;
+                    })
+                    .catch(error => {
+                        messagesBox.removeChild(typingIndicator);
+                        messagesBox.innerHTML += `<div class="message bot-message"><p>Sorry, there was an error processing your request.</p></div>`;
+                        console.error("Error:", error);
+                    });
+            }, 1000);
+    
+            userInput.value = "";
+        }
+    });
+
+    // contact message form validation
+    document.getElementById("contactForm").addEventListener("submit", function(event) {
+    let valid = true;
+
+    // Get form elements
+    let name = document.getElementById("name");
+    let email = document.getElementById("email");
+    let message = document.getElementById("message");
+
+    let nameError = document.getElementById("nameError");
+    let emailError = document.getElementById("emailError");
+    let messageError = document.getElementById("messageError");
+
+    // Name validation (minimum 3 characters)
+    if (name.value.trim().length < 3) {
+        nameError.classList.remove("d-none");
+        valid = false;
+    } else {
+        nameError.classList.add("d-none");
+    }
+
+    // Email validation (basic format check)
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value.trim())) {
+        emailError.classList.remove("d-none");
+        valid = false;
+    } else {
+        emailError.classList.add("d-none");
+    }
+
+    // Message validation (minimum 10 characters)
+    if (message.value.trim().length < 10) {
+        messageError.classList.remove("d-none");
+        valid = false;
+    } else {
+        messageError.classList.add("d-none");
+    }
+
+    // If validation fails, prevent form submission
+    if (!valid) {
+        event.preventDefault();
+    }
+});
+    </script>
+
+{% endblock scripts %}

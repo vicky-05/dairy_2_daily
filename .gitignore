@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+
+
+
+# Media and Static files
+/staticfiles/
+/media/
+
+# Node Modules (if using JavaScript/Node.js for front-end)
+node_modules/
+
+# Environment Variables
+.env
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+
+# macOS specific files
+.DS_Store
+
+# Backup files
+*.~*
+*.tmp
+
+# Test coverage
+htmlcov/
+.coverage
+*.cover
+*.py,cover
+
+# Build files
+build/
+dist/
+
+# Cache files
+*.egg-info/
+.eggs/
+*.cache
+
+# Migrations (Optional: You might want to keep these tracked)
+migrations/*
+
+# Exclude any other specific file or directory

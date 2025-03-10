@@ -1,0 +1,453 @@
+{% extends 'layout/main.html' %}
+{% load static %}
+{% block title %} {% if product %} {{ product.name }} {% endif %} | Dairy to Daily {% endblock title %} 
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<style>
+    .fa-star {
+        color: #ccc;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .fa-star:hover{
+        color: #f39c12;
+        
+    }
+
+    .fa-star.selected {
+        color: #f39c12; /* Highlighted color */
+    }
+
+    .review-card-section h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #000;
+    }
+
+    .related-products-section h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #000;
+    }
+    .related-products-section .card:hover{
+        transform: scale(1.1);
+        transition: all 0.3s ease-in-out;
+    }
+
+.cartBtn {
+  width: 200px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: white;
+  font-weight: 500;
+  position: relative;
+  background-color: rgb(29, 29, 29);
+  box-shadow: 0 20px 30px -7px rgba(27, 27, 27, 0.219);
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cart {
+  z-index: 2;
+}
+
+.cartBtn:active {
+  transform: scale(0.96);
+}
+
+
+
+@keyframes slide-in-top {
+  0% {
+    transform: translateY(-30px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0) rotate(-90deg);
+    opacity: 1;
+  }
+}
+
+.cartBtn:hover .cart {
+  animation: slide-in-left 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@keyframes slide-in-left {
+  0% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+
+
+</style>
+{% endblock styles %}
+
+{% block content %}
+        {% include 'inc/toast.html' %}
+        <div class="container mt-3">
+            <div class="row">
+                <!-- Product Media Section (Image and Video) -->
+                <div class="col-lg-6">
+                    <div id="productMediaCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <!-- Image Slide -->
+                            <div class="carousel-item active">
+                                <img src="{{ product.image.url }}" alt="Curd" class="w-100 " style="height: 50vh; object-fit: contain;">
+                            </div>
+                            <!-- Video Slide -->
+                            <div class="carousel-item">
+                                <video class="w-100" style="height: 100vh; object-fit: contain;" controls id="productVideo">
+                                    <source src="{{ product.product_video.url }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            
+                        </div>
+                        <!-- Carousel Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productMediaCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productMediaCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Info Section -->
+                <div class="col-lg-6 mt-4 mt-lg-0">
+                    <h1 class="display-4 fw-bold">{{ product.name }}</h1>
+                    <!-- Price with Discount -->
+                    <div class="mb-3">
+                        {% if discounted_price %}
+                            <p class="h2 fw-bold" style="color: black;">
+                                ₹{{ discounted_price|floatformat:2 }} 
+                                {% if discount_percentage %}
+                                    <span class="text-muted text-decoration-line-through fw-normal" style="font-size: 20px;">₹{{ product.price }}</span>
+                            </p>
+                            <span class="badge" style="background-color:black;">{{ discount_percentage }}% Off</span>
+                            <span class="text-muted">Membership: <strong class="text-dark">{{ subscription }}</strong></span>
+                            {% endif %}
+                        {% else %}
+                            <p class="h2 fw-bold" style="color: black;">₹{{ product.price }}</p>
+                        {% endif %}
+                    </div>
+                    <p class="text-muted">{{ product.description }}</p>
+                    <!-- Stock Status -->
+                    <div class="stock-status mb-3">
+                        {% if product.quantity > 0 %}
+                        <span class="badge bg-dark fs-6 py-2 px-3">In Stock</span>
+                        {% else %}
+                        <span class="badge bg-danger fs-6 py-2 px-3">Out of Stock</span>
+                        {% endif %}
+                    </div>
+                
+                    <!-- Variant Selector -->
+                    <div class="mb-3">
+                        <label for="variant" class="form-label fs-5">Choose Variant:</label>
+                        <div id="variant-buttons" class="d-flex flex-wrap gap-2">
+                            {% if variant.exists %}
+                                <!-- Loop through all variants to create buttons -->
+                                {% for variants in variant %}
+                                <a href="{% url 'product_detail' variants.slug %}" class="btn text-uppercase btn-outline-dark {% if variants.slug == product.slug %}active{% endif %}">
+                                    {% if variants.unit_name %}
+                                        {{ variants.unit_name }}
+                                        {{ variants.unit }}
+                                    {% endif %}
+                                </a>
+                                {% endfor %}
+                            {% else %}
+                                <!-- Fallback if no variants are available -->
+                                <p class="text-muted">No variants available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                
+                    
+                    <!-- Buttons -->
+                    {% if user.is_authenticated %}
+                    <div class="d-flex justify-content-start">
+                        <a href="{% url 'add_to_cart' product.slug %}" class="btn btn-lg btn-success cartBtn  me-3" style="background-color: black; color: white;">
+                            {% if cart and product.slug in cart %}
+                                Go to Cart
+                            {% else %}
+                            <svg class="cart" fill="white" viewBox="0 0 576 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path>
+                              </svg>
+                              ADD TO CART
+                              
+                              
+                            {% endif %}
+                        </a>
+                        
+                        {% if product.quantity > 0 %}
+                        <a href="{% url 'process_order' product.slug discounted_price|floatformat:2|default:product.price %}" class="btn btn-lg " style="background-color: black; color: white;" data-slug="{{ product.slug }}">Buy Now</a>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="d-flex justify-content-start">
+                        <a href="{% url 'login' %}" class="btn btn-lg btn-success me-3" style="background-color: black; color: white;">Add to Cart</a>
+                        <a href="{% url 'login' %}" class="btn btn-lg " style="background-color: black; color: white;">Buy Now</a>
+                        
+                    </div>
+                    {% endif %}
+
+                    <!-- Features -->
+                    <div class="features mt-2 p-4 ">
+                        <h5 class="fw-bold text-center mb-4">Why Choose Us?</h5>
+                        <div class="row text-center">
+                            <!-- Feature 1 -->
+                            <div class="col-md-4 mb-3">
+                                <i class="bi bi-truck text-dark fs-2 mb-2"></i>
+                                <p class="fw-bold">Free Delivery</p>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div class="col-md-4 mb-3">
+                                <i class="bi bi-shield-check text-dark fs-2 mb-2"></i>
+                                <p class="fw-bold">100% Organic</p>
+                            </div>
+                            <!-- Feature 3 -->
+                            <div class="col-md-4 mb-3">
+                                <i class="bi bi-recycle text-dark fs-2 mb-2"></i>
+                                <p class="fw-bold">Eco-Friendly</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <section class="benefits-section my-5" data-aos="fade-up">
+            <h2 class="text-center mb-4" data-aos="zoom-in">Our Benefits</h2>
+            <div class="container">
+                <div class="row text-center g-4">
+                    <!-- Benefit 1 -->
+                    {% for benefit in benefits %}
+                    <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
+                        <img src="{{ benefit.icon_url }}" alt="{{ benefit.title }}" class="benefit-icon">
+                        <p>{{ benefit.title }}</p>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Review Card Section -->
+        <section class="review-card-section my-5 container" data-aos="fade-up">
+            <div class="d-flex justify-content-between mb-4">
+                <!-- Customer Reviews Heading -->
+                <h2 class="text-left" data-aos="zoom-in">Customer Reviews</h2>
+                
+                <!-- Rate Product Button for Eligible Users -->
+                {% if user.is_authenticated %}
+                    {% if user_review %}
+                        <div>
+                            <button class="btn btn-dark fw-bold" disabled>You've already reviewed this product</button>
+                        </div>
+                    {% elif has_completed_order %}
+                        <div>
+                            <button class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#reviewModal">Rate Product</button>
+                        </div>
+                    {% else %}
+                        <div>
+                            <button class="btn btn-dark fw-bold" disabled>Buy the Product then Rate</button>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div>
+                        <a href="{% url 'login' %}" class="btn btn-dark fw-bold">Login to Rate</a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="container">
+                <!-- Review Cards Container (Flexbox) -->
+                <div class="review-cards-row ">
+                    {% for review in reviews %}
+                    <!-- Review Card 1 -->
+                    <div class="card p-3 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                        <div class="review-header d-flex justify-content-between align-items-center">
+                            <h5 class="reviewer-name mb-1 fw-bold">{{ review.user.username }}</h5>
+                            <p class="review-rating mb-1"><strong>Rating:</strong>                    
+                                {% with review.rating|floatformat:1 as rating %}
+                                {% for i in "12345" %}
+                                {% if rating|floatformat:1 >= i %}
+                                ★
+                                {% else %}
+                                ☆
+                                {% endif %}
+                                {% endfor %}
+                                {% endwith %}    
+                            </p>
+                        </div>
+                        <p class="review-text text-muted fs-6">{{ review.feedback }}</p>
+                    </div>
+                    {% empty %}
+                    <p>No reviews yet. Be the first to review this product!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Review Modal -->
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">Leave a Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="reviewForm" action="{% url 'submit_review' slug=product.slug %}" method="POST" >
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="reviewRating" class="form-label">Rating</label>
+                                <div class="star-rating d-flex">
+                                    <i class="fa fa-star" data-value="1"></i>
+                                    <i class="fa fa-star" data-value="2"></i>
+                                    <i class="fa fa-star" data-value="3"></i>
+                                    <i class="fa fa-star" data-value="4"></i>
+                                    <i class="fa fa-star" data-value="5"></i>
+                                </div>
+                                
+                                <input type="hidden" id="reviewRating" name="reviewRating" value="0">
+                                
+                            </div>
+                            <div class="mb-3">
+                                <label for="reviewText" class="form-label">Your Review</label>
+                                <textarea class="form-control" id="reviewText" name="reviewText" rows="3" required></textarea>
+                            </div>
+                            <!-- Error message container -->
+                            <div id="reviewTextError" class="text-danger" style="display: none; font-size: 0.9rem;">
+                                Please provide your feedback before submitting.
+                            </div>
+                            <button type="submit" class="btn btn-dark">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Facts Section -->
+        <section class="nutrition-section container my-5" data-aos="fade-up" data-aos-duration="1000">
+            <h2 class="text-center fw-bold mb-4">Nutrition Facts</h2>
+            <table class="table table-bordered table-striped text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nutrient</th>
+                        <th>Amount per 100g</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for nutrient, value in product.nutrient_facts.items %}
+                    <tr>
+                    <td>{{ nutrient }}</td>
+                    <td>{{ value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Related Products Section -->
+        <section class="related-products-section my-5" data-aos="fade-up">
+            <h2 class="text-center mb-4" data-aos="zoom-in">Related Products</h2>
+            <div class="container">
+                <div class="row g-4">
+                    {% for product in related_products %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                {% if product.discounted_price and product.discounted_price != product.price %}
+                                <p class="card-text text-muted mb-1">
+                                    <s>₹{{ product.price|floatformat:2 }}</s> <strong>₹{{ product.discounted_price|floatformat:2 }}</strong>
+                                </p>
+                                {% else %}
+                                <p class="card-text text-muted mb-1">₹{{ product.price|floatformat:2 }}</p>
+                                {% endif %}
+                                <div>
+                                <span class="card-text text-muted mb-1">Unit: {{ product.unit_name }} {{ product.unit }}</span>
+                                </div>
+                                <a href="{% url 'product_detail' slug=product.slug %}" class="btn btn-dark">View Product</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <p class="text-center text-muted w-100">No related products found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+    
+
+    // Function to validate the review form before submission
+
+    function validateReview() {
+        const reviewText = document.getElementById("reviewText").value.trim();
+        const errorMessage = document.getElementById("reviewTextError");
+
+        // Check if review text is empty
+        if (!reviewText) {
+            // Show the error message if textarea is empty
+            errorMessage.style.display = "block";
+            return false;  // Prevent form submission
+        } else {
+            // Hide the error message if textarea is not empty
+            errorMessage.style.display = "none";
+        }
+        return true;  // Allow form submission
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('.fa-star');
+        const ratingInput = document.getElementById('reviewRating');
+    
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                const rating = parseInt(this.getAttribute('data-value')); // Get the clicked star's value
+                ratingInput.value = rating; // Update the hidden input value
+    
+                // Highlight the selected stars
+                stars.forEach(s => {
+                    if (parseInt(s.getAttribute('data-value')) <= rating) {
+                        s.classList.add('selected'); // Add the selected class
+                    } else {
+                        s.classList.remove('selected'); // Remove the selected class
+                    }
+                });
+            });
+        });
+    });
+    
+</script>
+
+{% endblock scripts %}
