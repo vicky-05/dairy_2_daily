@@ -11,7 +11,7 @@ env/
 
 # Media and Static files
 /staticfiles/
-/media/
+
 
 # Node Modules (if using JavaScript/Node.js for front-end)
 node_modules/
